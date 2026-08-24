@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OmniRoadmap</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #111827;
+        color: #f3f4f6;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; background: #111827; }
+      .app { display: flex; min-height: 100vh; }
+      aside {
+        width: 260px;
+        flex: 0 0 260px;
+        background: #1f2937;
+        border-right: 1px solid #374151;
+        padding: 16px 12px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; border-bottom: 1px solid #374151; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+      .brand h1 { font-size: 15px; margin: 0; font-weight: 650; }
+      .nav-title { margin: 20px 8px 8px; color: #9ca3af; font-size: 12px; text-transform: uppercase; }
+      .nav-item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #d1d5db;
+        padding: 8px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .nav-item:hover, .nav-item.active { background: #374151; color: #fff; }
+      .nav-link { text-decoration: none; }
+      .pill { color: #93c5fd; font-variant-numeric: tabular-nums; }
+      main { flex: 1; min-width: 0; padding: 24px; overflow: auto; }
+      .toolbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px; }
+      h2 { margin: 0; font-size: 24px; }
+      .subtle { color: #9ca3af; font-size: 14px; margin-top: 4px; }
+      .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+      input, select, button, textarea {
+        background: #1f2937;
+        border: 1px solid #374151;
+        border-radius: 6px;
+        color: #f3f4f6;
+        padding: 8px 10px;
+        font: inherit;
+      }
+      textarea { width: min(760px, 100%); min-height: 76px; resize: vertical; line-height: 1.4; }
+      button { cursor: pointer; }
+      button:hover { border-color: #60a5fa; }
+      .cards { display: grid; grid-template-columns: repeat(5, minmax(130px, 1fr)); gap: 12px; margin-bottom: 22px; }
+      .card { background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 14px; }
+      .label { color: #9ca3af; font-size: 12px; }
+      .value { font-size: 26px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+      .bands { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+      .band h3 { margin: 0 0 12px; font-size: 14px; color: #d1d5db; }
+      .bar-row { display: grid; grid-template-columns: minmax(80px, 150px) 1fr 42px; gap: 10px; align-items: center; margin: 8px 0; font-size: 13px; color: #d1d5db; }
+      .bar { height: 8px; border-radius: 999px; background: #374151; overflow: hidden; }
+      .bar span { display: block; height: 100%; background: #38bdf8; }
+      .table-wrap { border: 1px solid #374151; border-radius: 8px; overflow: hidden; background: #1f2937; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { padding: 10px 12px; border-bottom: 1px solid #374151; text-align: left; vertical-align: top; }
+      th { color: #9ca3af; background: #111827; font-weight: 600; position: sticky; top: 0; }
+      tr:hover td { background: #273244; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .badge { display: inline-block; border-radius: 999px; padding: 2px 8px; background: #374151; color: #d1d5db; white-space: nowrap; }
+      .badge.priority { background: rgba(34, 197, 94, .14); color: #86efac; }
+      .query-panel { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(280px, 420px); gap: 12px; margin-bottom: 22px; }
+      .query-actions { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+      .column-tables { display: grid; gap: 12px; max-height: 420px; overflow: auto; }
+      .column-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+      .column-table h4 { margin: 0; font-size: 12px; color: #d1d5db; text-transform: uppercase; }
+      .copy-actions { display: flex; gap: 6px; }
+      .icon-button { width: 30px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+      .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      .mini-table th, .mini-table td { padding: 7px 8px; border-bottom: 1px solid #374151; }
+      .mini-table th { position: sticky; top: 0; background: #111827; color: #9ca3af; }
+      .mini-table td { color: #d1d5db; }
+      .mini-table button { padding: 4px 7px; font-size: 12px; }
+      .sample-cell { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #9ca3af; }
+      .error { color: #fca5a5; background: rgba(239, 68, 68, .12); border: 1px solid rgba(239, 68, 68, .35); padding: 12px; border-radius: 8px; }
+      @media (max-width: 900px) {
+        .app { display: block; }
+        aside { width: auto; border-right: 0; border-bottom: 1px solid #374151; }
+        .cards, .bands, .query-panel { grid-template-columns: 1fr 1fr; }
+        .toolbar { display: block; }
+        .controls { justify-content: flex-start; margin-top: 14px; }
+      }
+      @media (max-width: 560px) {
+        main { padding: 16px; }
+        .cards, .bands, .query-panel { grid-template-columns: 1fr; }
+        th:nth-child(4), td:nth-child(4), th:nth-child(6), td:nth-child(6) { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside>
+        <div class="brand">
+          <span class="dot"></span>
+          <h1>OmniRoadmap</h1>
+        </div>
+        <div class="nav-title">Entities</div>
+        <div id="entities"></div>
+        <div class="nav-title">Providers</div>
+        <div id="providers"></div>
+        <div class="nav-title">Kinds</div>
+        <div id="kinds"></div>
+      </aside>
+      <main>
+        <div class="toolbar">
+          <div>
+            <h2 id="page-title">Roadmap Store</h2>
+            <div id="subtitle" class="subtle">Loading synced provider data...</div>
+          </div>
+          <div class="controls">
+            <input id="search" type="search" placeholder="Search items" />
+            <select id="provider-filter"><option value="">All providers</option></select>
+            <select id="kind-filter"><option value="">All kinds</option></select>
+            <button id="refresh" type="button">Refresh</button>
+          </div>
+        </div>
+        <div id="error"></div>
+        <section class="query-panel">
+          <div class="card">
+            <h3>ORQL Search</h3>
+            <textarea id="orql" spellcheck="false">FROM items WHERE provider = "aha-studio" ORDER BY updated_at DESC LIMIT 100</textarea>
+            <div class="query-actions">
+              <button id="run-query" type="button">Run Query</button>
+              <button id="reset-query" type="button">Reset</button>
+              <span id="query-status" class="subtle"></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="column-head">
+              <h3>Columns</h3>
+              <div class="copy-actions">
+                <button class="icon-button" type="button" title="Copy all columns as Markdown table" data-copy-format="markdown" data-copy-table="all">MD</button>
+                <button class="icon-button" type="button" title="Copy all columns as CSV" data-copy-format="csv" data-copy-table="all">CSV</button>
+              </div>
+            </div>
+            <div class="query-actions">
+              <select id="column-entity">
+                <option value="items">Items</option>
+                <option value="initiatives">Initiatives</option>
+                <option value="features">Features</option>
+                <option value="epics">Epics</option>
+              </select>
+            </div>
+            <div id="columns" class="column-tables"></div>
+          </div>
+        </section>
+        <section class="cards" id="cards"></section>
+        <section class="bands">
+          <div class="card"><h3>MoSCoW</h3><div id="moscow"></div></div>
+          <div class="card"><h3>Status</h3><div id="statuses"></div></div>
+          <div class="card"><h3>Kano</h3><div id="kano"></div></div>
+        </section>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr id="items-head">
+                <th>Ref</th>
+                <th>Name</th>
+                <th>Provider</th>
+                <th>Kind</th>
+                <th>Status</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody id="items"></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+    <script>
+      let snapshot = null;
+      let displayedItems = [];
+      let queryColumns = null;
+      const entityDefs = [
+        { key: "items", label: "Items", path: "/items", kind: "" },
+        { key: "initiatives", label: "Initiatives", path: "/initiatives", kind: "initiative" },
+        { key: "features", label: "Features", path: "/features", kind: "feature" },
+        { key: "epics", label: "Epics", path: "/epics", kind: "epic" },
+      ];
+      const pageEntity = entityFromPath(location.pathname);
+      const state = { provider: "", kind: pageEntity.kind, search: "", entity: pageEntity.key };
+      const defaultColumns = [
+        { key: "source_ref", label: "Ref" },
+        { key: "name", label: "Name" },
+        { key: "provider", label: "Provider" },
+        { key: "kind", label: "Kind" },
+        { key: "status", label: "Status" },
+        { key: "priority", label: "Priority" },
+      ];
+
+      const byId = (id) => document.getElementById(id);
+      const fmt = new Intl.NumberFormat();
+
+      async function load() {
+        byId("error").innerHTML = "";
+        const res = await fetch("/api/snapshot");
+        if (!res.ok) throw new Error(await res.text());
+        snapshot = await res.json();
+        renderAll();
+        setDefaultQuery();
+        runQuery().catch(showError);
+      }
+
+      function renderAll() {
+        const s = snapshot.summary;
+        byId("page-title").textContent = pageEntity.label;
+        byId("subtitle").textContent =
+          `${fmt.format(entityItems().length)} ${pageEntity.label.toLowerCase()} from ${s.providers.length} providers`;
+        renderCards(s);
+        renderEntities(s);
+        renderNav(s);
+        renderBars("moscow", s.by_moscow);
+        renderBars("statuses", s.by_status_category);
+        renderBars("kano", s.by_kano);
+        renderFilters(s);
+        byId("column-entity").value = state.entity;
+        displayedItems = entityItems();
+        queryColumns = null;
+        renderItems();
+        loadColumns().catch(showError);
+      }
+
+      function renderEntities(s) {
+        byId("entities").innerHTML = entityDefs.map((entity) => {
+          const count = entity.key === "items" ? s.total_items : (s.by_kind[entity.kind] || 0);
+          return `<a class="nav-item nav-link ${state.entity === entity.key ? "active" : ""}" href="${entity.path}">
+            <span>${escapeHTML(entity.label)}</span><span class="pill">${fmt.format(count)}</span>
+          </a>`;
+        }).join("");
+      }
+
+      function renderCards(s) {
+        byId("cards").innerHTML = [
+          ["Items", s.total_items],
+          ["Releases", s.total_releases],
+          ["Field defs", s.total_field_defs],
+          ["Augments", s.augment_count],
+          ["Sync rows", s.sync_meta.length],
+        ].map(([label, value]) => `<div class="card"><div class="label">${label}</div><div class="value">${fmt.format(value)}</div></div>`).join("");
+      }
+
+      function renderNav(s) {
+        byId("providers").innerHTML = s.providers.map((p) =>
+          `<button class="nav-item ${state.provider === p.provider ? "active" : ""}" data-provider="${escapeAttr(p.provider)}"><span>${escapeHTML(p.provider || "unset")}</span><span class="pill">${fmt.format(p.total)}</span></button>`
+        ).join("");
+        byId("kinds").innerHTML = Object.entries(s.by_kind).sort().map(([k, v]) =>
+          `<button class="nav-item ${state.kind === k ? "active" : ""}" data-kind="${escapeAttr(k)}"><span>${escapeHTML(k || "unset")}</span><span class="pill">${fmt.format(v)}</span></button>`
+        ).join("");
+        document.querySelectorAll("[data-provider]").forEach((el) => el.onclick = () => {
+          state.provider = state.provider === el.dataset.provider ? "" : el.dataset.provider;
+          byId("provider-filter").value = state.provider;
+          renderAll();
+        });
+        document.querySelectorAll("[data-kind]").forEach((el) => el.onclick = () => {
+          state.kind = state.kind === el.dataset.kind ? "" : el.dataset.kind;
+          byId("kind-filter").value = state.kind;
+          renderAll();
+        });
+      }
+
+      function renderFilters(s) {
+        const providerSelect = byId("provider-filter");
+        const kindSelect = byId("kind-filter");
+        providerSelect.innerHTML = `<option value="">All providers</option>` + s.providers.map((p) =>
+          `<option value="${escapeAttr(p.provider)}">${escapeHTML(p.provider)}</option>`
+        ).join("");
+        kindSelect.innerHTML = `<option value="">All kinds</option>` + Object.keys(s.by_kind).sort().map((k) =>
+          `<option value="${escapeAttr(k)}">${escapeHTML(k)}</option>`
+        ).join("");
+        providerSelect.value = state.provider;
+        kindSelect.value = state.kind;
+      }
+
+      async function loadColumns() {
+        const entity = byId("column-entity").value || "items";
+        const provider = state.provider || "";
+        const url = `/api/columns?entity=${encodeURIComponent(entity)}${provider ? `&provider=${encodeURIComponent(provider)}` : ""}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(await res.text());
+        renderColumns(await res.json());
+      }
+
+      function renderColumns(fields) {
+        const sorted = [...fields].sort((a, b) => String(a.query_field || "").localeCompare(String(b.query_field || "")));
+        const canonical = sorted.filter((f) => f.source === "canonical");
+        const custom = sorted.filter((f) => f.source === "custom");
+        byId("columns").innerHTML = [
+          renderColumnTable("Canonical", canonical),
+          renderColumnTable("Custom Values", custom),
+        ].join("");
+        bindCopyButtons(sorted);
+        document.querySelectorAll("[data-query-field]").forEach((el) => el.onclick = () => {
+          const field = el.dataset.queryField;
+          byId("orql").value = `FROM ${state.entity} WHERE ${field} IS NOT NULL ORDER BY updated_at DESC LIMIT 100`;
+          runQuery().catch(showError);
+        });
+      }
+
+      function renderColumnTable(title, fields) {
+        if (!fields.length) return `<div class="column-table"><h4>${escapeHTML(title)}</h4><div class="subtle">No columns found.</div></div>`;
+        const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        return `<div class="column-table">
+          <div class="column-head">
+            <h4>${escapeHTML(title)}</h4>
+            <div class="copy-actions">
+              <button class="icon-button" type="button" title="Copy Markdown table" data-copy-format="markdown" data-copy-table="${escapeAttr(id)}">MD</button>
+              <button class="icon-button" type="button" title="Copy CSV" data-copy-format="csv" data-copy-table="${escapeAttr(id)}">CSV</button>
+            </div>
+          </div>
+          <table class="mini-table">
+            <thead><tr><th>Column</th><th>Label</th><th>Type</th><th>Rows</th><th>Samples</th><th></th></tr></thead>
+            <tbody>${fields.map((f) => {
+              const samples = (f.sample_values || []).slice(0, 2).map(previewText).join(" | ");
+              return `<tr>
+                <td class="mono">${escapeHTML(f.query_field)}</td>
+                <td>${escapeHTML(f.label || f.key)}</td>
+                <td>${escapeHTML(f.type || "string")}</td>
+                <td class="mono">${fmt.format(f.count || 0)}</td>
+                <td class="sample-cell">${escapeHTML(samples)}</td>
+                <td><button type="button" data-query-field="${escapeAttr(f.query_field)}">Use</button></td>
+              </tr>`;
+            }).join("")}</tbody>
+          </table>
+        </div>`;
+      }
+
+      function bindCopyButtons(tables) {
+        const byTable = {
+          all: tables,
+          canonical: tables.filter((f) => f.source === "canonical"),
+          "custom-values": tables.filter((f) => f.source === "custom"),
+        };
+        document.querySelectorAll("[data-copy-format]").forEach((el) => el.onclick = async () => {
+          const rows = byTable[el.dataset.copyTable] || [];
+          const text = el.dataset.copyFormat === "csv" ? columnsToCSV(rows) : columnsToMarkdown(rows);
+          await navigator.clipboard.writeText(text);
+          const original = el.textContent;
+          el.textContent = "OK";
+          setTimeout(() => { el.textContent = original; }, 900);
+        });
+      }
+
+      function columnExportRows(fields) {
+        return fields.map((f) => ({
+          Column: f.query_field || "",
+          Label: f.label || "",
+          Type: f.type || "",
+          Source: f.source || "",
+          Rows: String(f.count || 0),
+          Coverage: `${Math.round((f.coverage || 0) * 100)}%`,
+          Samples: (f.sample_values || []).slice(0, 3).map(previewText).join(" | "),
+        }));
+      }
+
+      function columnsToMarkdown(fields) {
+        const rows = columnExportRows(fields);
+        const headers = ["Column", "Label", "Type", "Source", "Rows", "Coverage", "Samples"];
+        return [
+          `| ${headers.join(" | ")} |`,
+          `| ${headers.map(() => "---").join(" | ")} |`,
+          ...rows.map((row) => `| ${headers.map((h) => markdownCell(row[h])).join(" | ")} |`),
+        ].join("\n");
+      }
+
+      function columnsToCSV(fields) {
+        const rows = columnExportRows(fields);
+        const headers = ["Column", "Label", "Type", "Source", "Rows", "Coverage", "Samples"];
+        return [
+          headers.map(csvCell).join(","),
+          ...rows.map((row) => headers.map((h) => csvCell(row[h])).join(",")),
+        ].join("\n");
+      }
+
+      function markdownCell(value) {
+        return String(value ?? "").replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>");
+      }
+
+      function csvCell(value) {
+        const s = String(value ?? "");
+        if (/[",\r\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+        return s;
+      }
+
+      function renderBars(target, counts) {
+        const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        const max = Math.max(1, ...entries.map((e) => e[1]));
+        byId(target).innerHTML = entries.map(([k, v]) => {
+          const width = Math.round((v / max) * 100);
+          return `<div class="bar-row"><span>${escapeHTML(k)}</span><div class="bar"><span style="width:${width}%"></span></div><span class="mono">${fmt.format(v)}</span></div>`;
+        }).join("");
+      }
+
+      function renderItems() {
+        const needle = state.search.trim().toLowerCase();
+        const rows = displayedItems.filter((it) => {
+          if (state.provider && it.provider !== state.provider) return false;
+          if (!needle) return true;
+          const customValues = Object.values(it.custom_fields || {});
+          return [it.id, it.source_ref, it.source_id, it.name, it.status, it.owner, ...customValues]
+            .filter(Boolean)
+            .some((v) => String(v).toLowerCase().includes(needle));
+        });
+        const columns = queryColumns && queryColumns.length ? queryColumns : defaultColumns;
+        byId("items-head").innerHTML = columns.map((col) => `<th>${escapeHTML(col.label)}</th>`).join("");
+        byId("items").innerHTML = rows.map((it) =>
+          `<tr>${columns.map((col) => `<td>${renderCell(it, col.key)}</td>`).join("")}</tr>`
+        ).join("");
+      }
+
+      function renderCell(it, key) {
+        if (key === "source_ref") {
+          const ref = it.source_ref || it.source_id || it.id;
+          return it.source_url ? `<a href="${escapeAttr(it.source_url)}" target="_blank" rel="noreferrer">${escapeHTML(ref)}</a>` : escapeHTML(ref);
+        }
+        if (key === "priority") {
+          return [it.moscow, it.kano].filter(Boolean).map((p) => `<span class="badge priority">${escapeHTML(p)}</span>`).join(" ") || '<span class="subtle">unset</span>';
+        }
+        if (key === "status") {
+          return `<span class="badge">${escapeHTML(it.status || it.status_category || "unset")}</span>`;
+        }
+        const value = fieldValue(it, key);
+        return escapeHTML(formatValue(value));
+      }
+
+      function fieldValue(it, key) {
+        if (key.startsWith("custom.")) {
+          const wanted = key.slice("custom.".length);
+          const fields = it.custom_fields || {};
+          if (Object.prototype.hasOwnProperty.call(fields, wanted)) return fields[wanted];
+          const normalized = Object.entries(fields).find(([fieldKey]) => normalizeFieldKey(fieldKey) === wanted);
+          return normalized ? normalized[1] : "";
+        }
+        if (key === "rice_score") return it.rice && it.rice.score;
+        return it[key];
+      }
+
+      function normalizeFieldKey(key) {
+        return String(key || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+      }
+
+      function formatValue(value) {
+        if (value == null || value === "") return "";
+        if (Array.isArray(value)) return value.join(", ");
+        if (typeof value === "object") return JSON.stringify(value);
+        return String(value);
+      }
+
+      async function runQuery() {
+        byId("error").innerHTML = "";
+        byId("query-status").textContent = "Running...";
+        const query = byId("orql").value.trim();
+        const res = await fetch("/api/query", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query })
+        });
+        const payload = await res.json().catch(async () => ({ issues: [{ message: await res.text() }] }));
+        if (!res.ok) {
+          const message = (payload.issues || []).map((i) => i.message).join("; ") || "Query failed";
+          byId("query-status").textContent = "";
+          showError(new Error(message));
+          return;
+        }
+        displayedItems = payload.items || [];
+        queryColumns = payload.columns || null;
+        byId("query-status").textContent = `${fmt.format(displayedItems.length)} rows`;
+        renderItems();
+      }
+
+      function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+      }
+      function escapeAttr(value) { return escapeHTML(value); }
+      function previewText(value) {
+        const div = document.createElement("div");
+        div.innerHTML = String(value ?? "");
+        const text = (div.textContent || div.innerText || String(value ?? ""))
+          .replace(/\s+/g, " ")
+          .trim();
+        return text.length > 180 ? `${text.slice(0, 180)}...` : text;
+      }
+
+      byId("refresh").onclick = () => load().catch(showError);
+      byId("run-query").onclick = () => runQuery().catch(showError);
+      byId("reset-query").onclick = () => {
+        setDefaultQuery();
+        displayedItems = entityItems();
+        queryColumns = null;
+        byId("query-status").textContent = "";
+        renderItems();
+      };
+      byId("search").oninput = (e) => { state.search = e.target.value; renderItems(); };
+      byId("provider-filter").onchange = (e) => { state.provider = e.target.value; renderAll(); };
+      byId("kind-filter").onchange = (e) => { state.kind = e.target.value; renderItems(); };
+      byId("column-entity").onchange = (e) => {
+        state.entity = e.target.value;
+        loadColumns().catch(showError);
+      };
+      function showError(err) { byId("error").innerHTML = `<div class="error">${escapeHTML(err.message || err)}</div>`; }
+      function entityFromPath(path) {
+        return entityDefs.find((entity) => entity.path === path) || entityDefs[0];
+      }
+      function entityItems() {
+        if (!pageEntity.kind) return snapshot.items;
+        return snapshot.items.filter((it) => it.kind === pageEntity.kind);
+      }
+      function setDefaultQuery() {
+        byId("orql").value = `FROM ${pageEntity.key} WHERE provider = "aha-studio" ORDER BY updated_at DESC LIMIT 100`;
+      }
+      load().catch(showError);
+    </script>
+  </body>
+</html>
