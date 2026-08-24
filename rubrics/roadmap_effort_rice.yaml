@@ -1,0 +1,246 @@
+id: omniroadmap-effort-rice-v1
+name: OmniRoadmap Effort and RICE Estimation
+version: "0.1.0"
+description: >
+  LLM-as-Judge rubric for estimating implementation effort and RICE inputs for
+  roadmap items using product requirements, codebase evidence, ownership maps,
+  and dependency signals. Intended for prioritization support, not final
+  commitment planning.
+evaluationType: analytic
+passCriteria:
+  minCategoriesPassing: all_required
+  maxFindingsSeverity:
+    critical: 0
+    high: 0
+    medium: -1
+    low: -1
+  scoreThresholds:
+    pass: 75
+    partial: 55
+judgeInstructions:
+  - Score only from supplied evidence. If codebase evidence or ownership data is missing, lower confidence instead of guessing.
+  - Cite concrete evidence for every category, such as file paths, modules, services, APIs, migrations, tests, owners, or dependency names.
+  - Distinguish product scope from implementation effort. A valuable feature can still have high effort.
+  - Treat new architecture, data migrations, infrastructure, security boundaries, or cross-team dependencies as effort multipliers.
+  - Do not count lines of code alone as effort. Use code amount as one signal among coupling, test surface, migration risk, ownership, and unknowns.
+  - Return structured category scores and a short explanation suitable for storing on an OmniRoadmap item.
+  - Mark low-confidence results for human review when evidence is incomplete, stale, or contradictory.
+metadata:
+  author: OmniRoadmap
+  basedOn:
+    - RICE prioritization model
+    - MoSCoW prioritization model
+    - structured-evaluation RubricSet schema
+categories:
+  - id: effort
+    name: Effort
+    description: >
+      Estimates relative implementation effort from codebase evidence,
+      architecture change, infrastructure impact, ownership, and dependencies.
+      Higher score means lower effort and more implementation readiness.
+    weight: 40
+    required: true
+    class: implementation_readiness
+    evaluation: semantic
+    scale:
+      type: categorical
+      options:
+        - value: pass
+          label: Low to moderate effort
+          criteria:
+            - Small or well-contained change with clear existing patterns.
+            - Owned by one team or a clearly identified owner.
+            - Limited dependency, migration, infrastructure, or security impact.
+        - value: partial
+          label: Medium effort or uncertainty
+          criteria:
+            - Touches several modules or requires moderate new design.
+            - Has some ownership, dependency, data, or integration uncertainty.
+            - Requires notable test, migration, rollout, or coordination work.
+        - value: fail
+          label: High effort or high uncertainty
+          criteria:
+            - Requires new architecture, platform capability, infrastructure, data migration, or cross-service redesign.
+            - Spans multiple teams without clear ownership or sequencing.
+            - Has significant unknowns, operational risk, security risk, or dependency risk.
+    criteria:
+      - id: code_scope
+        name: Code Scope and Locality
+        weight: 20
+        class: implementation_readiness
+        evaluation: semantic
+        pass:
+          description: Change appears localized.
+          indicators:
+            - One service, package, bounded context, or UI surface dominates the implementation.
+            - Existing code has similar nearby patterns.
+            - Expected code change is small or medium and easy to review.
+        partial:
+          description: Change crosses several areas but remains tractable.
+          indicators:
+            - Multiple packages, API handlers, UI views, or data types are affected.
+            - Existing patterns exist but need extension.
+            - Test surface is moderate.
+        fail:
+          description: Change is broad or poorly localized.
+          indicators:
+            - Many services, repositories, generated clients, or schema layers are affected.
+            - Existing code has no clear pattern to follow.
+            - Test and review surface is large.
+      - id: architecture_novelty
+        name: Architecture Novelty
+        weight: 20
+        class: implementation_readiness
+        evaluation: semantic
+        pass:
+          description: Reuses existing architecture.
+          indicators:
+            - No new subsystem, protocol, persistence model, or background execution pattern is required.
+            - Existing extension points fit the work.
+        partial:
+          description: Extends architecture in a controlled way.
+          indicators:
+            - Adds a new adapter, evaluator, endpoint, job, or data shape using established patterns.
+            - Some design decisions remain but are bounded.
+        fail:
+          description: Requires new architecture.
+          indicators:
+            - Introduces a new platform service, orchestration model, data pipeline, auth boundary, or storage abstraction.
+            - Requires design review before reliable estimation.
+      - id: data_infrastructure
+        name: Data, Infrastructure, and Operations
+        weight: 20
+        class: implementation_readiness
+        evaluation: semantic
+        pass:
+          description: Minimal operational impact.
+          indicators:
+            - No schema migration, backfill, queue, cache, deployment, or infra change is required.
+            - Failure modes are local and reversible.
+        partial:
+          description: Moderate operational impact.
+          indicators:
+            - Requires additive schema, migration, feature flag, batch job, or background process.
+            - Rollout and rollback need planning but are straightforward.
+        fail:
+          description: Significant operational impact.
+          indicators:
+            - Requires destructive migration, large backfill, new infrastructure, data retention changes, or high-volume processing.
+            - Rollout risk is substantial.
+      - id: dependencies
+        name: Dependencies and Integrations
+        weight: 20
+        class: implementation_readiness
+        evaluation: semantic
+        pass:
+          description: Few dependencies.
+          indicators:
+            - No external vendor, customer system, or upstream team is on the critical path.
+            - Required APIs are stable and available.
+        partial:
+          description: Some dependencies.
+          indicators:
+            - Depends on one or more known teams, libraries, APIs, schemas, or release trains.
+            - Coordination is needed but ownership is clear.
+        fail:
+          description: Dependency-heavy or blocked.
+          indicators:
+            - Multiple teams or vendors must deliver first.
+            - APIs, contracts, permissions, data access, or schedules are uncertain.
+      - id: ownership_fit
+        name: Team Ownership Fit
+        weight: 20
+        class: implementation_readiness
+        evaluation: semantic
+        pass:
+          description: Ownership is clear.
+          indicators:
+            - Most affected files/modules map to one owner.
+            - The owning team has the expected skill set.
+        partial:
+          description: Ownership is split but manageable.
+          indicators:
+            - Two or more owners are involved with clear boundaries.
+            - Handoffs or reviews are required.
+        fail:
+          description: Ownership is unclear or fragmented.
+          indicators:
+            - No owner is mapped for key code areas.
+            - Several owners have overlapping responsibility or unclear decision rights.
+
+  - id: reach
+    name: Reach
+    description: Estimates how many users, customers, accounts, workflows, or records the item affects in a defined time window.
+    weight: 20
+    required: true
+    class: specification_quality
+    evaluation: semantic
+    scale:
+      type: categorical
+      options:
+        - value: pass
+          label: High reach
+          criteria:
+            - Affects many users, customers, records, tenants, or core workflows.
+            - Evidence includes usage, customer count, ACV, support volume, telemetry, or roadmap commitments.
+        - value: partial
+          label: Medium reach or uncertain reach
+          criteria:
+            - Affects a meaningful but bounded audience.
+            - Audience is named but not quantified.
+        - value: fail
+          label: Low or unsupported reach
+          criteria:
+            - Affects few users or only edge cases.
+            - No evidence supports the claimed audience.
+
+  - id: impact
+    name: Impact
+    description: Estimates expected benefit if the item is delivered.
+    weight: 20
+    required: true
+    class: specification_quality
+    evaluation: semantic
+    scale:
+      type: categorical
+      options:
+        - value: pass
+          label: High impact
+          criteria:
+            - Clear strategic, revenue, retention, compliance, security, reliability, or customer-experience impact.
+            - Outcome is tied to measurable business value or risk reduction.
+        - value: partial
+          label: Moderate impact
+          criteria:
+            - Benefit is plausible but partially specified or hard to quantify.
+            - Impact is important for a segment but not broad.
+        - value: fail
+          label: Low or unclear impact
+          criteria:
+            - Benefit is mostly cosmetic, speculative, or not tied to a business outcome.
+
+  - id: confidence
+    name: Confidence
+    description: Estimates confidence in the reach, impact, and effort assessment.
+    weight: 20
+    required: true
+    class: deterministic_integrity
+    evaluation: semantic
+    scale:
+      type: categorical
+      options:
+        - value: pass
+          label: High confidence
+          criteria:
+            - Evidence is current, specific, and sourced.
+            - Product scope, codebase impact, dependencies, and ownership are sufficiently clear.
+        - value: partial
+          label: Medium confidence
+          criteria:
+            - Some evidence exists but key details are missing or stale.
+            - One or more RICE inputs require human confirmation.
+        - value: fail
+          label: Low confidence
+          criteria:
+            - Evidence is missing, contradictory, or too vague to estimate reliably.
+            - Codebase, ownership, or dependency information is insufficient.
