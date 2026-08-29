@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ProductBuildersHQ/compass-rice/catalog"
+	"github.com/ProductBuildersHQ/compass-rice/rice"
 	_ "github.com/go-sql-driver/mysql"
 	omniroadmap "github.com/grokify/omniroadmap-core"
 	"github.com/grokify/omniroadmap-core/provider"
@@ -735,5 +737,150 @@ func TestDoltStore_Phase5Pipeline(t *testing.T) {
 	}
 	if assessmentRow.OpportunityRankFinal == nil || *assessmentRow.OpportunityRankFinal != 1 {
 		t.Errorf("OA-2 OpportunityRankFinal = %v, want 1", assessmentRow.OpportunityRankFinal)
+	}
+}
+
+const validCustomerB2BDoc = `{
+	"profileId": "customer/b2b/v1",
+	"evidence": {
+		"eligibleAccounts": 40,
+		"affectedAccounts": 12,
+		"eligibleArr": 10000000,
+		"affectedArr": 3500000,
+		"expectedRetentionOrExpansionImprovementPp": 2,
+		"verifiedQuantitativeSources": 2,
+		"verifiedQualitativeSources": 1,
+		"effortPd": 20
+	}
+}`
+
+func mustNormalizeCompass(t *testing.T) rice.Normalized {
+	t.Helper()
+	n, err := catalog.NormalizeDocument([]byte(validCustomerB2BDoc))
+	if err != nil {
+		t.Fatalf("NormalizeDocument: %v", err)
+	}
+	return n
+}
+
+func TestDoltStore_ProfileAssignment(t *testing.T) {
+	startDoltServer(t)
+
+	dsn := fmt.Sprintf("root:@tcp(127.0.0.1:%d)/omniroadmap_profileassignment_test", testPort)
+	if err := InitDatabase(dsn); err != nil {
+		t.Fatalf("InitDatabase: %v", err)
+	}
+	s, err := New(dsn)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	t.Cleanup(func() { _ = s.Close() })
+
+	ctx := t.Context()
+	if err := s.Migrate(ctx); err != nil {
+		t.Fatalf("Migrate: %v", err)
+	}
+
+	proposed := assessment.ProposeProfileAssignment("OPP-1", "customer/b2b/v1", "primarily a retention play", "judge-session-9")
+	proposed.Secondary = []rice.Profile{rice.ProfileRisk}
+	proposed.EvidenceIDs = []string{"EV-1"}
+	if err := s.SaveProfileAssignment(ctx, proposed); err != nil {
+		t.Fatalf("SaveProfileAssignment: %v", err)
+	}
+
+	got, err := s.GetProfileAssignment(ctx, "OPP-1")
+	if err != nil {
+		t.Fatalf("GetProfileAssignment: %v", err)
+	}
+	if got.Status != assessment.ProfileAssignmentProposed {
+		t.Errorf("Status = %q, want %q", got.Status, assessment.ProfileAssignmentProposed)
+	}
+	if len(got.Secondary) != 1 || got.Secondary[0] != rice.ProfileRisk {
+		t.Errorf("Secondary = %+v, want [%s]", got.Secondary, rice.ProfileRisk)
+	}
+	if len(got.EvidenceIDs) != 1 || got.EvidenceIDs[0] != "EV-1" {
+		t.Errorf("EvidenceIDs = %+v, want [EV-1]", got.EvidenceIDs)
+	}
+
+	confirmed := got.Confirm("pm@example.com", time.Now().UTC().Truncate(time.Second))
+	if err := s.SaveProfileAssignment(ctx, confirmed); err != nil {
+		t.Fatalf("SaveProfileAssignment (confirmed): %v", err)
+	}
+
+	got2, err := s.GetProfileAssignment(ctx, "OPP-1")
+	if err != nil {
+		t.Fatalf("GetProfileAssignment (after confirm): %v", err)
+	}
+	if got2.Status != assessment.ProfileAssignmentConfirmed || got2.ConfirmedBy != "pm@example.com" || got2.ConfirmedAt.IsZero() {
+		t.Errorf("GetProfileAssignment after confirm = %+v", got2)
+	}
+
+	all, err := s.ListProfileAssignments(ctx)
+	if err != nil {
+		t.Fatalf("ListProfileAssignments: %v", err)
+	}
+	if len(all) != 1 || all[0].SpecID != "OPP-1" {
+		t.Errorf("ListProfileAssignments = %+v, want exactly [OPP-1]", all)
+	}
+
+	if err := s.DeleteProfileAssignment(ctx, "OPP-1"); err != nil {
+		t.Fatalf("DeleteProfileAssignment: %v", err)
+	}
+	if _, err := s.GetProfileAssignment(ctx, "OPP-1"); !omniroadmap.IsNotFound(err) {
+		t.Errorf("GetProfileAssignment after delete: err = %v, want ErrNotFound", err)
+	}
+}
+
+func TestDoltStore_OpportunityAssessment_CompassProjection(t *testing.T) {
+	startDoltServer(t)
+
+	dsn := fmt.Sprintf("root:@tcp(127.0.0.1:%d)/omniroadmap_compassprojection_test", testPort)
+	if err := InitDatabase(dsn); err != nil {
+		t.Fatalf("InitDatabase: %v", err)
+	}
+	s, err := New(dsn)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	t.Cleanup(func() { _ = s.Close() })
+
+	ctx := t.Context()
+	if err := s.Migrate(ctx); err != nil {
+		t.Fatalf("Migrate: %v", err)
+	}
+
+	normalized := mustNormalizeCompass(t)
+	a := assessment.NewOpportunityAssessment("OA-COMPASS-1", assessment.OpportunityRef{SpecID: "OPP-COMPASS-1"}, "Compass-scored opportunity", time.Now().UTC().Truncate(time.Second))
+	a.Compass = &assessment.CompassAssessment{
+		ProfileID:  normalized.ProfileID,
+		Normalized: normalized,
+	}
+	// A legacy RICE input is also present, to prove the projection prefers
+	// Compass over it -- matching ToRankInput's own precedence.
+	a.RICE = &assessment.RICEAssessment{
+		Reach:  assessment.Reach{Fraction: 0.9, EvidenceIDs: []string{"EV-1"}},
+		Effort: assessment.EffortEstimate{Expected: 1},
+	}
+
+	if err := s.SaveOpportunityAssessment(ctx, *a); err != nil {
+		t.Fatalf("SaveOpportunityAssessment: %v", err)
+	}
+
+	row, err := s.Client().OpportunityAssessment.Get(ctx, "OA-COMPASS-1")
+	if err != nil {
+		t.Fatalf("OpportunityAssessment.Get: %v", err)
+	}
+	if row.CompassProfileID != string(normalized.ProfileID) {
+		t.Errorf("CompassProfileID = %q, want %q", row.CompassProfileID, normalized.ProfileID)
+	}
+	if !row.RiceComputable {
+		t.Error("RiceComputable = false, want true")
+	}
+	wantScore, err := normalized.Score()
+	if err != nil {
+		t.Fatalf("Score: %v", err)
+	}
+	if row.RiceScore == nil || *row.RiceScore != wantScore {
+		t.Errorf("RiceScore = %v, want %v (the Compass score, not the legacy RICE score)", row.RiceScore, wantScore)
 	}
 }

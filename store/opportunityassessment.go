@@ -26,19 +26,35 @@ const (
 // they can never drift out of sync with the canonical record they're
 // projected from.
 type assessmentProjection struct {
-	moscowClass    string
-	riceScore      *float64
-	riceComputable bool
-	kanoCategory   string
-	mihCategory    string
+	moscowClass      string
+	riceScore        *float64
+	riceComputable   bool
+	kanoCategory     string
+	mihCategory      string
+	compassProfileID string
 }
 
+// projectAssessment derives rice_score/rice_computable compass-first,
+// matching assessment.OpportunityAssessment.ToRankInput's own precedence
+// (RMI-PRISMROADMAP-016): a Compass assessment's ResolveCompassRICE result
+// wins over the legacy ladder RICE whenever both are present, since the two
+// use incompatible Reach scales and mixing them in one column would make
+// rice_score meaningless for cross-opportunity sorting.
 func projectAssessment(a assessment.OpportunityAssessment) assessmentProjection {
 	proj := assessmentProjection{
 		moscowClass: a.MoSCoW().String(),
 	}
 
-	if a.RICE != nil {
+	switch {
+	case a.Compass != nil:
+		proj.compassProfileID = string(a.Compass.ProfileID)
+		result := assessment.ResolveCompassRICE(a.Compass)
+		proj.riceComputable = result.Computable
+		if result.Computable {
+			score := result.Score
+			proj.riceScore = &score
+		}
+	case a.RICE != nil:
 		result := assessment.ComputeRICE(*a.RICE)
 		proj.riceComputable = result.Computable
 		if result.Computable {
@@ -115,6 +131,7 @@ func (s *DoltStore) SaveOpportunityAssessment(ctx context.Context, a assessment.
 		SetRiceComputable(proj.riceComputable).
 		SetKanoCategory(proj.kanoCategory).
 		SetMihCategory(proj.mihCategory).
+		SetCompassProfileID(proj.compassProfileID).
 		SetCanonical(a).
 		OnConflict().
 		UpdateNewValues().
