@@ -228,9 +228,12 @@ func datasetForCompassProfile(id rice.ProfileID, assessments []assessment.Opport
 // flattenEvidenceJSON records one field per top-level key of a profile's
 // raw evidence document into stats -- the same dynamic-field-discovery
 // mechanism customStats.add uses for provider custom fields, applied to a
-// compass-rice Evidence struct's JSON shape instead. Query names are
-// prefixed "evidence." to keep them visually and namespace-distinct from
-// the normalized columns in the same dataset.
+// compass-rice Evidence struct's JSON shape instead. Query names go through
+// evidenceQueryName (lowercase, "evidence."-prefixed) rather than the raw
+// JSON key: guardsql.Schema.Normalize() lowercases field names internally,
+// so a mixed-case query name here would silently fail to match at query
+// time (analyticsquery.compassProfileFields uses the identical
+// transformation, so the two packages' field names always agree).
 func flattenEvidenceJSON(stats *customStats, evidenceJSON json.RawMessage) {
 	if len(evidenceJSON) == 0 {
 		return
@@ -248,7 +251,10 @@ func flattenEvidenceJSON(stats *customStats, evidenceJSON json.RawMessage) {
 
 	for _, key := range keys {
 		value := decoded[key]
-		queryName := "evidence." + key
+		queryName := evidenceQueryName(key)
+		if queryName == "" {
+			continue
+		}
 		stat := stats.byName[queryName]
 		if stat == nil {
 			typ := inferType(value)
@@ -269,6 +275,31 @@ func flattenEvidenceJSON(stats *customStats, evidenceJSON json.RawMessage) {
 			stats.values[queryName][s] = struct{}{}
 		}
 	}
+}
+
+// evidenceQueryName turns a raw evidence JSON key into a lowercase,
+// "evidence."-prefixed query name -- the same lowercase+non-alnum-to-
+// underscore transformation customQueryName uses for the "custom." prefix,
+// so both follow one normalization rule across the codebase.
+func evidenceQueryName(key string) string {
+	key = strings.TrimSpace(key)
+	if key == "" {
+		return ""
+	}
+	var b strings.Builder
+	for _, r := range strings.ToLower(key) {
+		switch {
+		case unicode.IsLetter(r) || unicode.IsDigit(r):
+			b.WriteRune(r)
+		case r == '_' || r == '-' || r == ' ' || r == '.':
+			b.WriteRune('_')
+		}
+	}
+	out := strings.Trim(b.String(), "_")
+	if out == "" {
+		return ""
+	}
+	return "evidence." + out
 }
 
 // humanizeKey turns a lowerCamelCase evidence field key (e.g.

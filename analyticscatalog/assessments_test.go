@@ -122,15 +122,15 @@ func TestDatasetsForCompassProfilesOnePerProfile(t *testing.T) {
 	}
 
 	// Raw evidence fields are flattened dynamically, prefixed "evidence.".
-	arrField := fieldByQueryName(ds.Fields, "evidence.eligibleArr")
+	arrField := fieldByQueryName(ds.Fields, "evidence.eligiblearr")
 	if arrField == nil {
-		t.Fatal("missing evidence.eligibleArr field -- raw evidence was not flattened")
+		t.Fatal("missing evidence.eligiblearr field -- raw evidence was not flattened")
 	}
 	if arrField.Count != 2 {
-		t.Errorf("evidence.eligibleArr Count = %d, want 2", arrField.Count)
+		t.Errorf("evidence.eligiblearr Count = %d, want 2", arrField.Count)
 	}
 	if arrField.Type != "number" {
-		t.Errorf("evidence.eligibleArr Type = %q, want number", arrField.Type)
+		t.Errorf("evidence.eligiblearr Type = %q, want number", arrField.Type)
 	}
 }
 
