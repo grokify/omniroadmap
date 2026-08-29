@@ -11,6 +11,8 @@ import (
 	"unicode"
 
 	"github.com/grokify/omniroadmap-core/provider"
+	"github.com/grokify/prism-roadmap/assessment"
+
 	"github.com/grokify/omniroadmap/store"
 	"github.com/plexusone/dashforge/dashboardir"
 )
@@ -23,7 +25,42 @@ func BuildFromStore(ctx context.Context, s *store.DoltStore) (dashboardir.Analyt
 	if err != nil {
 		return dashboardir.AnalyticsCatalog{}, err
 	}
-	return Build(items), nil
+	cat := Build(items)
+
+	assessments, err := s.ListCurrentOpportunityAssessments(ctx)
+	if err != nil {
+		return dashboardir.AnalyticsCatalog{}, err
+	}
+	profileAssignments, err := s.ListProfileAssignments(ctx)
+	if err != nil {
+		return dashboardir.AnalyticsCatalog{}, err
+	}
+	ranks, err := latestRanksByAssessmentID(ctx, s)
+	if err != nil {
+		return dashboardir.AnalyticsCatalog{}, err
+	}
+
+	cat.Sources[0].Datasets = append(cat.Sources[0].Datasets,
+		assessmentDatasets(assessments, profileAssignments, ranks)...)
+	return cat, nil
+}
+
+// latestRanksByAssessmentID reads the most recently compiled ReportDataset
+// (if any) and returns its ranking, keyed by AssessmentID -- the source for
+// opportunity_assessments' calculated_rank/final_rank columns.
+func latestRanksByAssessmentID(ctx context.Context, s *store.DoltStore) (map[string]assessment.OpportunityRank, error) {
+	dataset, err := s.GetLatestReportDataset(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if dataset == nil {
+		return nil, nil
+	}
+	ranks := make(map[string]assessment.OpportunityRank, len(dataset.Ranking))
+	for _, r := range dataset.Ranking {
+		ranks[r.AssessmentID] = r
+	}
+	return ranks, nil
 }
 
 // Build creates a UIForge analytics catalog from canonical OmniRoadmap items.
