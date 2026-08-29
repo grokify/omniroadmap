@@ -15,22 +15,63 @@ import (
 
 	"github.com/grokify/guardsql"
 	"github.com/grokify/omniroadmap-core/provider"
+	"github.com/grokify/prism-roadmap/assessment"
+
 	"github.com/grokify/omniroadmap/store"
 	"github.com/plexusone/dashforge/dashboardir"
 )
 
-// Execute reads canonical items from the store and executes a read-only
-// GuardSQL query against them.
+// Execute reads canonical items and the assessment corpus (current-cycle
+// assessments, profile assignments, and the latest compiled ranking) from
+// the store and executes a read-only GuardSQL query against whichever
+// entity the query names.
 func Execute(ctx context.Context, s *store.DoltStore, req dashboardir.AnalyticsQueryRequest) (dashboardir.AnalyticsQueryResult, error) {
 	items, err := s.ListItems(ctx, store.ItemFilter{})
 	if err != nil {
 		return dashboardir.AnalyticsQueryResult{}, err
 	}
-	return ExecuteItems(items, req)
+	assessments, err := s.ListCurrentOpportunityAssessments(ctx)
+	if err != nil {
+		return dashboardir.AnalyticsQueryResult{}, err
+	}
+	profileAssignments, err := s.ListProfileAssignments(ctx)
+	if err != nil {
+		return dashboardir.AnalyticsQueryResult{}, err
+	}
+	ranks, err := latestRanksByAssessmentID(ctx, s)
+	if err != nil {
+		return dashboardir.AnalyticsQueryResult{}, err
+	}
+	return execute(items, assessments, profileAssignments, ranks, req)
 }
 
-// ExecuteItems executes a read-only GuardSQL query against canonical items.
+// latestRanksByAssessmentID reads the most recently compiled ReportDataset
+// (if any) and returns its ranking, keyed by AssessmentID -- the source for
+// opportunity_assessments' calculated_rank/final_rank columns.
+func latestRanksByAssessmentID(ctx context.Context, s *store.DoltStore) (map[string]assessment.OpportunityRank, error) {
+	dataset, err := s.GetLatestReportDataset(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if dataset == nil {
+		return nil, nil
+	}
+	ranks := make(map[string]assessment.OpportunityRank, len(dataset.Ranking))
+	for _, r := range dataset.Ranking {
+		ranks[r.AssessmentID] = r
+	}
+	return ranks, nil
+}
+
+// ExecuteItems executes a read-only GuardSQL query against canonical items
+// only -- no assessment-family entities are available (opportunity_
+// assessments/profile_assignments still resolve as valid, empty entities).
+// Kept for standalone items-only callers and tests.
 func ExecuteItems(items []provider.Item, req dashboardir.AnalyticsQueryRequest) (dashboardir.AnalyticsQueryResult, error) {
+	return execute(items, nil, nil, nil, req)
+}
+
+func execute(items []provider.Item, assessments []assessment.OpportunityAssessment, assignments []assessment.ProfileAssignment, ranks map[string]assessment.OpportunityRank, req dashboardir.AnalyticsQueryRequest) (dashboardir.AnalyticsQueryResult, error) {
 	input := strings.TrimSpace(req.Query)
 	if input == "" {
 		return dashboardir.AnalyticsQueryResult{}, fmt.Errorf("query is required")
@@ -41,6 +82,9 @@ func ExecuteItems(items []provider.Item, req dashboardir.AnalyticsQueryRequest) 
 	}
 	start := time.Now()
 	schema := querySchema(items, limit)
+	for name, entity := range assessmentEntities(assessments) {
+		schema.Entities[name] = entity
+	}
 	q, issues := guardsql.Lint(input, guardsql.LintConfig{
 		Schema:       schema,
 		AllowedOps:   []guardsql.Operation{guardsql.OperationRead},
@@ -57,16 +101,9 @@ func ExecuteItems(items []provider.Item, req dashboardir.AnalyticsQueryRequest) 
 		evalQuery.OrderBy = nil
 		evalQuery.Limit = -1
 	}
-	entityFilter, err := entityKind(q.From)
+	rows, err := rowsForEntity(q.From, items, assessments, assignments, ranks)
 	if err != nil {
 		return dashboardir.AnalyticsQueryResult{}, err
-	}
-	rows := make([]guardsql.Row, 0, len(items))
-	for i := range items {
-		if entityFilter != "" && string(items[i].Kind) != entityFilter {
-			continue
-		}
-		rows = append(rows, queryRow(&items[i]))
 	}
 	filtered, err := guardsql.Eval(&evalQuery, rows)
 	if err != nil {
@@ -96,6 +133,39 @@ func ExecuteItems(items []provider.Item, req dashboardir.AnalyticsQueryRequest) 
 		RowCount:      len(outRows),
 		ExecutionTime: time.Since(start).Milliseconds(),
 	}, nil
+}
+
+// rowsForEntity dispatches to the row-builder for whichever entity the
+// query names: the items family (items/initiatives/features/epics) or the
+// assessment family (opportunity_assessments/profile_assignments/
+// compass_<profile>).
+func rowsForEntity(from string, items []provider.Item, assessments []assessment.OpportunityAssessment, assignments []assessment.ProfileAssignment, ranks map[string]assessment.OpportunityRank) ([]guardsql.Row, error) {
+	name := strings.ToLower(strings.TrimSpace(from))
+	switch {
+	case name == assessmentEntityName:
+		return assessmentRows(assessments, ranks), nil
+	case name == profileAssignmentEntityName:
+		return profileAssignmentRows(assignments), nil
+	case strings.HasPrefix(name, compassEntityPrefix):
+		id, ok := compassEntityMap(assessments)[name]
+		if !ok {
+			return nil, fmt.Errorf("unknown entity %q", from)
+		}
+		return compassProfileRows(id, assessments), nil
+	default:
+		entityFilter, err := entityKind(from)
+		if err != nil {
+			return nil, err
+		}
+		rows := make([]guardsql.Row, 0, len(items))
+		for i := range items {
+			if entityFilter != "" && string(items[i].Kind) != entityFilter {
+				continue
+			}
+			rows = append(rows, queryRow(&items[i]))
+		}
+		return rows, nil
+	}
 }
 
 func resultColumns(q *guardsql.Query, rows []guardsql.Row) []dashboardir.AnalyticsQueryColumn {
