@@ -4,6 +4,7 @@ go 1.26.5
 
 require (
 	entgo.io/ent v0.14.6
+	github.com/ProductBuildersHQ/compass-rice v0.4.0
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/grokify/aha-go v0.10.0
 	github.com/grokify/aha-studio v0.12.0
@@ -11,7 +12,7 @@ require (
 	github.com/grokify/godolt v0.3.0
 	github.com/grokify/guardsql v0.2.0
 	github.com/grokify/omniroadmap-core v0.1.0
-	github.com/grokify/prism-roadmap v0.19.0
+	github.com/grokify/prism-roadmap v0.20.0
 	github.com/grokify/productboard-go v0.1.0
 	github.com/grokify/structureddocs v0.1.0
 	github.com/plexusone/dashforge v0.6.0
