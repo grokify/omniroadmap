@@ -22,6 +22,10 @@ require (
 	github.com/spf13/cobra v1.10.2
 )
 
+// TODO(RMI-OMNIROADMAP-015): remove once prism-roadmap v0.20.1 (the
+// hasPrioritization Compass fix) is tagged and pushed.
+replace github.com/grokify/prism-roadmap => /Users/johnwang/go/src/github.com/grokify/prism-roadmap
+
 require (
 	ariga.io/atlas v1.3.0 // indirect
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.12-20260709200747-435963d16310.1 // indirect

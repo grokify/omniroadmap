@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	compassrender "github.com/ProductBuildersHQ/compass-rice/render"
 	"github.com/grokify/prism-roadmap/assessment"
 )
 
@@ -70,6 +71,13 @@ func renderRecommendation(b *strings.Builder, report assessment.OpportunityRepor
 	fmt.Fprintf(b, "- **MoSCoW:** %s\n", a.MoSCoW())
 
 	switch {
+	case a.Compass != nil:
+		result := assessment.ResolveCompassRICE(a.Compass)
+		if result.Computable {
+			fmt.Fprintf(b, "- **RICE Score:** %.4f (COMPASS profile: `%s`)\n", result.Score, result.ProfileID)
+		} else {
+			fmt.Fprintf(b, "- **RICE Score:** not computable — %s\n", result.Reason)
+		}
 	case a.RICE == nil:
 		b.WriteString("- **RICE Score:** not yet assessed\n")
 	default:
@@ -115,6 +123,10 @@ func renderPrioritization(b *strings.Builder, report assessment.OpportunityRepor
 		b.WriteString("\n")
 	}
 
+	if a.Compass != nil {
+		renderCompass(b, a)
+	}
+
 	if a.RICE == nil {
 		return
 	}
@@ -141,6 +153,34 @@ func renderPrioritization(b *strings.Builder, report assessment.OpportunityRepor
 	}
 
 	fmt.Fprintf(b, "**Effort:** %.1f person-days (estimability gate: %s)\n\n", a.RICE.Effort.Expected, gateStatus(a.RICE.Effort.Gate))
+}
+
+// renderCompass renders a's COMPASS-RICE assessment: computability/review
+// status, then the full raw-evidence -> band -> score translation via
+// compass-rice's own render.Markdown — never the score alone (compass-rice
+// PRD D10), and never reimplemented here, since compass-rice owns how its
+// own normalization is explained.
+func renderCompass(b *strings.Builder, a assessment.OpportunityAssessment) {
+	c := a.Compass
+	b.WriteString("**COMPASS-RICE assessment:**\n\n")
+
+	if result := assessment.ResolveCompassRICE(c); !result.Computable {
+		fmt.Fprintf(b, "_Not yet computable for ranking — %s._\n\n", result.Reason)
+	}
+
+	switch {
+	case c.NeedsHumanReview && c.HumanReview == nil:
+		b.WriteString("_Flagged for human review — not yet reviewed._\n\n")
+	case c.HumanReview != nil:
+		fmt.Fprintf(b, "_Reviewed by %s on %s", c.HumanReview.ReviewedBy, c.HumanReview.ReviewedAt.Format("2006-01-02"))
+		if c.HumanReview.Note != "" {
+			fmt.Fprintf(b, " — %s", c.HumanReview.Note)
+		}
+		b.WriteString("._\n\n")
+	}
+
+	b.WriteString(compassrender.Markdown(c.Normalized))
+	b.WriteString("\n")
 }
 
 func gateStatus(g assessment.EstimabilityGate) string {

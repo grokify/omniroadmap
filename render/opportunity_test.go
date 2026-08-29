@@ -1,13 +1,38 @@
 package render
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/ProductBuildersHQ/compass-rice/catalog"
 	"github.com/grokify/prism-roadmap/assessment"
 	"github.com/plexusone/structured-evaluation/claims"
 )
+
+const validCustomerB2BDoc = `{
+	"profileId": "customer/b2b/v1",
+	"evidence": {
+		"eligibleAccounts": 40,
+		"affectedAccounts": 12,
+		"eligibleArr": 10000000,
+		"affectedArr": 3500000,
+		"expectedRetentionOrExpansionImprovementPp": 2,
+		"verifiedQuantitativeSources": 2,
+		"verifiedQualitativeSources": 1,
+		"effortPd": 20
+	}
+}`
+
+func mustNormalizeCompass(t *testing.T) assessment.CompassAssessment {
+	t.Helper()
+	n, err := catalog.NormalizeDocument([]byte(validCustomerB2BDoc))
+	if err != nil {
+		t.Fatalf("NormalizeDocument: %v", err)
+	}
+	return assessment.CompassAssessment{ProfileID: n.ProfileID, Normalized: n}
+}
 
 func minimalReport(t *testing.T) assessment.OpportunityReport {
 	t.Helper()
@@ -171,6 +196,69 @@ func TestOpportunityMarkdownRendersNarrativeWithProvenance(t *testing.T) {
 	}
 	if !strings.Contains(md, "derived from: rank.finalRank") || !strings.Contains(md, "evidence: EV-1") {
 		t.Error("expected narrative provenance footnote to render")
+	}
+}
+
+func TestOpportunityMarkdownRendersCompassSection(t *testing.T) {
+	now := time.Date(2026, 8, 19, 0, 0, 0, 0, time.UTC)
+	a := *assessment.NewOpportunityAssessment("OA-1", assessment.OpportunityRef{SpecID: "OPP-1"}, "Title", now)
+	c := mustNormalizeCompass(t)
+	a.Compass = &c
+	report := assessment.NewOpportunityReport(now, a, nil)
+
+	md := OpportunityMarkdown(report, nil)
+
+	if !strings.Contains(md, "COMPASS-RICE assessment") {
+		t.Error("expected a COMPASS-RICE assessment heading")
+	}
+	if !strings.Contains(md, string(c.ProfileID)) {
+		t.Errorf("expected the profile ID %q to render", c.ProfileID)
+	}
+	if !strings.Contains(md, "Raw evidence") {
+		t.Error("expected the raw-evidence echo (compass-rice's own render.Markdown) to render")
+	}
+	score, err := c.Normalized.Score()
+	if err != nil {
+		t.Fatalf("Score: %v", err)
+	}
+	if !strings.Contains(md, fmt.Sprintf("%.4f", score)) {
+		t.Errorf("expected the compass score %v to render in the summary line, got:\n%s", score, md)
+	}
+}
+
+func TestOpportunityMarkdownCompassScorePrefersOverLegacyRICE(t *testing.T) {
+	now := time.Date(2026, 8, 19, 0, 0, 0, 0, time.UTC)
+	a := *assessment.NewOpportunityAssessment("OA-1", assessment.OpportunityRef{SpecID: "OPP-1"}, "Title", now)
+	c := mustNormalizeCompass(t)
+	a.Compass = &c
+	a.RICE = &assessment.RICEAssessment{
+		Reach:  assessment.Reach{Fraction: 0.9, EvidenceIDs: []string{"EV-1"}},
+		Effort: assessment.EffortEstimate{Expected: 1},
+	}
+	report := assessment.NewOpportunityReport(now, a, nil)
+
+	md := OpportunityMarkdown(report, nil)
+
+	if !strings.Contains(md, "COMPASS profile: `"+string(c.ProfileID)+"`") {
+		t.Errorf("expected the recommendation summary to cite the Compass profile (not fall back to legacy RICE), got:\n%s", md)
+	}
+}
+
+func TestOpportunityMarkdownCompassNeedsHumanReview(t *testing.T) {
+	now := time.Date(2026, 8, 19, 0, 0, 0, 0, time.UTC)
+	a := *assessment.NewOpportunityAssessment("OA-1", assessment.OpportunityRef{SpecID: "OPP-1"}, "Title", now)
+	c := mustNormalizeCompass(t)
+	c.NeedsHumanReview = true
+	a.Compass = &c
+	report := assessment.NewOpportunityReport(now, a, nil)
+
+	md := OpportunityMarkdown(report, nil)
+
+	if !strings.Contains(md, "not computable") {
+		t.Errorf("expected the score to render as not computable pending human review, got:\n%s", md)
+	}
+	if !strings.Contains(md, "Flagged for human review") {
+		t.Errorf("expected a human-review flag, got:\n%s", md)
 	}
 }
 
