@@ -42,19 +42,33 @@ const (
 	// structurally different persistence path, just a particular outcome
 	// of a new cycle's MoSCoWAnswers.
 	EditAssessment EditKind = "assessment"
+
+	// EditProfile records a change to an opportunity's COMPASS-RICE
+	// profile assignment: a PM confirming or rejecting a judge's
+	// proposal, or assigning a profile directly. Status lives on the
+	// record itself (assessment.ProfileAssignment.Status), so this one
+	// edit kind covers propose/confirm/reject/override — there is no
+	// separate EditKind per transition, matching EditAssessment's "the
+	// outcome varies, the persistence path doesn't" reasoning. A PM's
+	// acceptance of a NeedsHumanReview-flagged CompassAssessment is NOT
+	// this kind — that rides EditAssessment (a new cycle with
+	// CompassAssessment.HumanReview set), since it is a judgment change
+	// on the assessment record, not the profile assignment.
+	EditProfile EditKind = "profile"
 )
 
 // Edit is one structured, auditable review action. Exactly one of
-// Override or Assessment is set, matching Kind.
+// Override, Assessment, or Profile is set, matching Kind.
 type Edit struct {
 	Kind EditKind
 
 	// AssessmentID is required for EditClearOverride; ignored otherwise
-	// (Override/Assessment already carry their own ID).
+	// (Override/Assessment/Profile already carry their own ID).
 	AssessmentID string
 
 	Override   *assessment.RankOverride
 	Assessment *assessment.OpportunityAssessment
+	Profile    *assessment.ProfileAssignment
 }
 
 // Validate returns an error if the edit is not well-formed for its Kind.
@@ -75,6 +89,11 @@ func (e Edit) Validate() error {
 			return fmt.Errorf("assessment edit requires Assessment")
 		}
 		return e.Assessment.Validate()
+	case EditProfile:
+		if e.Profile == nil {
+			return fmt.Errorf("profile edit requires Profile")
+		}
+		return e.Profile.Validate()
 	default:
 		return fmt.Errorf("unknown edit kind %q", e.Kind)
 	}
@@ -85,6 +104,7 @@ type Store interface {
 	SaveRankOverride(ctx context.Context, o assessment.RankOverride) error
 	DeleteRankOverride(ctx context.Context, assessmentID string) error
 	SaveOpportunityAssessment(ctx context.Context, a assessment.OpportunityAssessment) error
+	SaveProfileAssignment(ctx context.Context, p assessment.ProfileAssignment) error
 }
 
 // Apply validates and persists one review edit.
@@ -105,6 +125,10 @@ func Apply(ctx context.Context, s Store, edit Edit) error {
 	case EditAssessment:
 		if err := s.SaveOpportunityAssessment(ctx, *edit.Assessment); err != nil {
 			return fmt.Errorf("review: applying assessment edit: %w", err)
+		}
+	case EditProfile:
+		if err := s.SaveProfileAssignment(ctx, *edit.Profile); err != nil {
+			return fmt.Errorf("review: applying profile edit: %w", err)
 		}
 	}
 	return nil

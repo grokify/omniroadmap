@@ -13,12 +13,14 @@ import (
 type fakeStore struct {
 	overrides   map[string]assessment.RankOverride
 	assessments map[string]assessment.OpportunityAssessment
+	profiles    map[string]assessment.ProfileAssignment
 }
 
 func newFakeStore() *fakeStore {
 	return &fakeStore{
 		overrides:   map[string]assessment.RankOverride{},
 		assessments: map[string]assessment.OpportunityAssessment{},
+		profiles:    map[string]assessment.ProfileAssignment{},
 	}
 }
 
@@ -34,6 +36,11 @@ func (f *fakeStore) DeleteRankOverride(ctx context.Context, assessmentID string)
 
 func (f *fakeStore) SaveOpportunityAssessment(ctx context.Context, a assessment.OpportunityAssessment) error {
 	f.assessments[a.ID] = a
+	return nil
+}
+
+func (f *fakeStore) SaveProfileAssignment(ctx context.Context, p assessment.ProfileAssignment) error {
+	f.profiles[p.SpecID] = p
 	return nil
 }
 
@@ -112,6 +119,47 @@ func TestApplyAssessmentEditInvalidRejected(t *testing.T) {
 	fs := newFakeStore()
 	if err := Apply(context.Background(), fs, Edit{Kind: EditAssessment, Assessment: &assessment.OpportunityAssessment{}}); err == nil {
 		t.Error("expected error for an invalid assessment")
+	}
+}
+
+func TestApplyProfileEdit(t *testing.T) {
+	fs := newFakeStore()
+	p := assessment.ProposeProfileAssignment("OPP-1", "customer/b2b/v1", "primarily a retention play", "judge-session-9")
+
+	if err := Apply(context.Background(), fs, Edit{Kind: EditProfile, Profile: &p}); err != nil {
+		t.Fatalf("Apply: %v", err)
+	}
+	got, ok := fs.profiles["OPP-1"]
+	if !ok || got.Status != assessment.ProfileAssignmentProposed {
+		t.Errorf("profiles[OPP-1] = %+v, ok=%v", got, ok)
+	}
+}
+
+func TestApplyProfileEditConfirmed(t *testing.T) {
+	fs := newFakeStore()
+	proposed := assessment.ProposeProfileAssignment("OPP-1", "customer/b2b/v1", "r", "judge")
+	confirmed := proposed.Confirm("pm@example.com", time.Now())
+
+	if err := Apply(context.Background(), fs, Edit{Kind: EditProfile, Profile: &confirmed}); err != nil {
+		t.Fatalf("Apply: %v", err)
+	}
+	got, ok := fs.profiles["OPP-1"]
+	if !ok || got.Status != assessment.ProfileAssignmentConfirmed || got.ConfirmedBy != "pm@example.com" {
+		t.Errorf("profiles[OPP-1] = %+v, ok=%v", got, ok)
+	}
+}
+
+func TestApplyProfileEditMissingRejected(t *testing.T) {
+	fs := newFakeStore()
+	if err := Apply(context.Background(), fs, Edit{Kind: EditProfile}); err == nil {
+		t.Error("expected error when Profile is nil")
+	}
+}
+
+func TestApplyProfileEditInvalidRejected(t *testing.T) {
+	fs := newFakeStore()
+	if err := Apply(context.Background(), fs, Edit{Kind: EditProfile, Profile: &assessment.ProfileAssignment{}}); err == nil {
+		t.Error("expected error for an invalid profile assignment")
 	}
 }
 
