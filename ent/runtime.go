@@ -13,6 +13,7 @@ import (
 	"github.com/grokify/omniroadmap/ent/opportunityassessment"
 	"github.com/grokify/omniroadmap/ent/opportunityspec"
 	"github.com/grokify/omniroadmap/ent/portfoliodimension"
+	"github.com/grokify/omniroadmap/ent/profileassignment"
 	"github.com/grokify/omniroadmap/ent/rankoverride"
 	"github.com/grokify/omniroadmap/ent/release"
 	"github.com/grokify/omniroadmap/ent/reportdataset"
@@ -482,12 +483,16 @@ func init() {
 	opportunityassessmentDescMihCategory := opportunityassessmentFields[14].Descriptor()
 	// opportunityassessment.MihCategoryValidator is a validator for the "mih_category" field. It is called by the builders before save.
 	opportunityassessment.MihCategoryValidator = opportunityassessmentDescMihCategory.Validators[0].(func(string) error)
+	// opportunityassessmentDescCompassProfileID is the schema descriptor for compass_profile_id field.
+	opportunityassessmentDescCompassProfileID := opportunityassessmentFields[15].Descriptor()
+	// opportunityassessment.CompassProfileIDValidator is a validator for the "compass_profile_id" field. It is called by the builders before save.
+	opportunityassessment.CompassProfileIDValidator = opportunityassessmentDescCompassProfileID.Validators[0].(func(string) error)
 	// opportunityassessmentDescCreatedAt is the schema descriptor for created_at field.
-	opportunityassessmentDescCreatedAt := opportunityassessmentFields[16].Descriptor()
+	opportunityassessmentDescCreatedAt := opportunityassessmentFields[17].Descriptor()
 	// opportunityassessment.DefaultCreatedAt holds the default value on creation for the created_at field.
 	opportunityassessment.DefaultCreatedAt = opportunityassessmentDescCreatedAt.Default.(func() time.Time)
 	// opportunityassessmentDescUpdatedAt is the schema descriptor for updated_at field.
-	opportunityassessmentDescUpdatedAt := opportunityassessmentFields[17].Descriptor()
+	opportunityassessmentDescUpdatedAt := opportunityassessmentFields[18].Descriptor()
 	// opportunityassessment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	opportunityassessment.DefaultUpdatedAt = opportunityassessmentDescUpdatedAt.Default.(func() time.Time)
 	// opportunityassessment.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
@@ -631,6 +636,98 @@ func init() {
 	// portfoliodimension.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	portfoliodimension.IDValidator = func() func(string) error {
 		validators := portfoliodimensionDescID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(id string) error {
+			for _, fn := range fns {
+				if err := fn(id); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	profileassignmentFields := schema.ProfileAssignment{}.Fields()
+	_ = profileassignmentFields
+	// profileassignmentDescProfileID is the schema descriptor for profile_id field.
+	profileassignmentDescProfileID := profileassignmentFields[1].Descriptor()
+	// profileassignment.ProfileIDValidator is a validator for the "profile_id" field. It is called by the builders before save.
+	profileassignment.ProfileIDValidator = func() func(string) error {
+		validators := profileassignmentDescProfileID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(profile_id string) error {
+			for _, fn := range fns {
+				if err := fn(profile_id); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// profileassignmentDescRationale is the schema descriptor for rationale field.
+	profileassignmentDescRationale := profileassignmentFields[3].Descriptor()
+	// profileassignment.RationaleValidator is a validator for the "rationale" field. It is called by the builders before save.
+	profileassignment.RationaleValidator = profileassignmentDescRationale.Validators[0].(func(string) error)
+	// profileassignmentDescProposedBy is the schema descriptor for proposed_by field.
+	profileassignmentDescProposedBy := profileassignmentFields[4].Descriptor()
+	// profileassignment.ProposedByValidator is a validator for the "proposed_by" field. It is called by the builders before save.
+	profileassignment.ProposedByValidator = func() func(string) error {
+		validators := profileassignmentDescProposedBy.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(proposed_by string) error {
+			for _, fn := range fns {
+				if err := fn(proposed_by); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// profileassignmentDescStatus is the schema descriptor for status field.
+	profileassignmentDescStatus := profileassignmentFields[5].Descriptor()
+	// profileassignment.StatusValidator is a validator for the "status" field. It is called by the builders before save.
+	profileassignment.StatusValidator = func() func(string) error {
+		validators := profileassignmentDescStatus.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(status string) error {
+			for _, fn := range fns {
+				if err := fn(status); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// profileassignmentDescConfirmedBy is the schema descriptor for confirmed_by field.
+	profileassignmentDescConfirmedBy := profileassignmentFields[6].Descriptor()
+	// profileassignment.ConfirmedByValidator is a validator for the "confirmed_by" field. It is called by the builders before save.
+	profileassignment.ConfirmedByValidator = profileassignmentDescConfirmedBy.Validators[0].(func(string) error)
+	// profileassignmentDescCreatedAt is the schema descriptor for created_at field.
+	profileassignmentDescCreatedAt := profileassignmentFields[9].Descriptor()
+	// profileassignment.DefaultCreatedAt holds the default value on creation for the created_at field.
+	profileassignment.DefaultCreatedAt = profileassignmentDescCreatedAt.Default.(func() time.Time)
+	// profileassignmentDescUpdatedAt is the schema descriptor for updated_at field.
+	profileassignmentDescUpdatedAt := profileassignmentFields[10].Descriptor()
+	// profileassignment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	profileassignment.DefaultUpdatedAt = profileassignmentDescUpdatedAt.Default.(func() time.Time)
+	// profileassignment.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	profileassignment.UpdateDefaultUpdatedAt = profileassignmentDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// profileassignmentDescID is the schema descriptor for id field.
+	profileassignmentDescID := profileassignmentFields[0].Descriptor()
+	// profileassignment.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	profileassignment.IDValidator = func() func(string) error {
+		validators := profileassignmentDescID.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),

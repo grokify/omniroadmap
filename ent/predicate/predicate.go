@@ -30,6 +30,9 @@ type OpportunitySpec func(*sql.Selector)
 // PortfolioDimension is the predicate function for portfoliodimension builders.
 type PortfolioDimension func(*sql.Selector)
 
+// ProfileAssignment is the predicate function for profileassignment builders.
+type ProfileAssignment func(*sql.Selector)
+
 // RankOverride is the predicate function for rankoverride builders.
 type RankOverride func(*sql.Selector)
 

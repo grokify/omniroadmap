@@ -50,6 +50,11 @@ func (OpportunityAssessment) Fields() []ent.Field {
 		// materialization runs across the full corpus
 		// (RMI-OMNIROADMAP-006) — ranking is inherently cross-opportunity
 		// and cannot be derived from a single assessment in isolation.
+		// compass_profile_id mirrors canonical.compass.profileId when a
+		// COMPASS-RICE assessment is recorded — rice_score/rice_computable
+		// are derived compass-first (assessment.ResolveCompassRICE) to
+		// match ToRankInput's own precedence, matching prism-roadmap
+		// v0.20.0's compass-first ranking (RMI-OMNIROADMAP-013).
 		field.String("moscow_class").MaxLen(32).Optional(),
 		field.Float("rice_score").Optional().Nillable(),
 		field.Bool("rice_computable").Default(false),
@@ -57,6 +62,7 @@ func (OpportunityAssessment) Fields() []ent.Field {
 		field.Int("opportunity_rank_final").Optional().Nillable(),
 		field.String("kano_category").MaxLen(64).Optional(),
 		field.String("mih_category").MaxLen(64).Optional(),
+		field.String("compass_profile_id").MaxLen(64).Optional(),
 
 		// canonical is the full assessment.OpportunityAssessment, typed
 		// directly so reads deserialize straight into the real Go struct
@@ -78,5 +84,6 @@ func (OpportunityAssessment) Indexes() []ent.Index {
 		index.Fields("moscow_class"),
 		index.Fields("kano_category"),
 		index.Fields("mih_category"),
+		index.Fields("compass_profile_id"),
 	}
 }

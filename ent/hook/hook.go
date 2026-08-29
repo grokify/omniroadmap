@@ -105,6 +105,18 @@ func (f PortfolioDimensionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PortfolioDimensionMutation", m)
 }
 
+// The ProfileAssignmentFunc type is an adapter to allow the use of ordinary
+// function as ProfileAssignment mutator.
+type ProfileAssignmentFunc func(context.Context, *ent.ProfileAssignmentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ProfileAssignmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ProfileAssignmentMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ProfileAssignmentMutation", m)
+}
+
 // The RankOverrideFunc type is an adapter to allow the use of ordinary
 // function as RankOverride mutator.
 type RankOverrideFunc func(context.Context, *ent.RankOverrideMutation) (ent.Value, error)

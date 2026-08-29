@@ -22,6 +22,7 @@ import (
 	"github.com/grokify/omniroadmap/ent/opportunityassessment"
 	"github.com/grokify/omniroadmap/ent/opportunityspec"
 	"github.com/grokify/omniroadmap/ent/portfoliodimension"
+	"github.com/grokify/omniroadmap/ent/profileassignment"
 	"github.com/grokify/omniroadmap/ent/rankoverride"
 	"github.com/grokify/omniroadmap/ent/release"
 	"github.com/grokify/omniroadmap/ent/reportdataset"
@@ -49,6 +50,8 @@ type Client struct {
 	OpportunitySpec *OpportunitySpecClient
 	// PortfolioDimension is the client for interacting with the PortfolioDimension builders.
 	PortfolioDimension *PortfolioDimensionClient
+	// ProfileAssignment is the client for interacting with the ProfileAssignment builders.
+	ProfileAssignment *ProfileAssignmentClient
 	// RankOverride is the client for interacting with the RankOverride builders.
 	RankOverride *RankOverrideClient
 	// Release is the client for interacting with the Release builders.
@@ -76,6 +79,7 @@ func (c *Client) init() {
 	c.OpportunityAssessment = NewOpportunityAssessmentClient(c.config)
 	c.OpportunitySpec = NewOpportunitySpecClient(c.config)
 	c.PortfolioDimension = NewPortfolioDimensionClient(c.config)
+	c.ProfileAssignment = NewProfileAssignmentClient(c.config)
 	c.RankOverride = NewRankOverrideClient(c.config)
 	c.Release = NewReleaseClient(c.config)
 	c.ReportDataset = NewReportDatasetClient(c.config)
@@ -180,6 +184,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		OpportunityAssessment: NewOpportunityAssessmentClient(cfg),
 		OpportunitySpec:       NewOpportunitySpecClient(cfg),
 		PortfolioDimension:    NewPortfolioDimensionClient(cfg),
+		ProfileAssignment:     NewProfileAssignmentClient(cfg),
 		RankOverride:          NewRankOverrideClient(cfg),
 		Release:               NewReleaseClient(cfg),
 		ReportDataset:         NewReportDatasetClient(cfg),
@@ -211,6 +216,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		OpportunityAssessment: NewOpportunityAssessmentClient(cfg),
 		OpportunitySpec:       NewOpportunitySpecClient(cfg),
 		PortfolioDimension:    NewPortfolioDimensionClient(cfg),
+		ProfileAssignment:     NewProfileAssignmentClient(cfg),
 		RankOverride:          NewRankOverrideClient(cfg),
 		Release:               NewReleaseClient(cfg),
 		ReportDataset:         NewReportDatasetClient(cfg),
@@ -246,7 +252,7 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.CustomFieldDef, c.DimensionOption, c.Evidence, c.Item, c.ItemAugment,
 		c.OpportunityAssessment, c.OpportunitySpec, c.PortfolioDimension,
-		c.RankOverride, c.Release, c.ReportDataset, c.SyncMeta,
+		c.ProfileAssignment, c.RankOverride, c.Release, c.ReportDataset, c.SyncMeta,
 	} {
 		n.Use(hooks...)
 	}
@@ -258,7 +264,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.CustomFieldDef, c.DimensionOption, c.Evidence, c.Item, c.ItemAugment,
 		c.OpportunityAssessment, c.OpportunitySpec, c.PortfolioDimension,
-		c.RankOverride, c.Release, c.ReportDataset, c.SyncMeta,
+		c.ProfileAssignment, c.RankOverride, c.Release, c.ReportDataset, c.SyncMeta,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -283,6 +289,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OpportunitySpec.mutate(ctx, m)
 	case *PortfolioDimensionMutation:
 		return c.PortfolioDimension.mutate(ctx, m)
+	case *ProfileAssignmentMutation:
+		return c.ProfileAssignment.mutate(ctx, m)
 	case *RankOverrideMutation:
 		return c.RankOverride.mutate(ctx, m)
 	case *ReleaseMutation:
@@ -1360,6 +1368,139 @@ func (c *PortfolioDimensionClient) mutate(ctx context.Context, m *PortfolioDimen
 	}
 }
 
+// ProfileAssignmentClient is a client for the ProfileAssignment schema.
+type ProfileAssignmentClient struct {
+	config
+}
+
+// NewProfileAssignmentClient returns a client for the ProfileAssignment from the given config.
+func NewProfileAssignmentClient(c config) *ProfileAssignmentClient {
+	return &ProfileAssignmentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `profileassignment.Hooks(f(g(h())))`.
+func (c *ProfileAssignmentClient) Use(hooks ...Hook) {
+	c.hooks.ProfileAssignment = append(c.hooks.ProfileAssignment, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `profileassignment.Intercept(f(g(h())))`.
+func (c *ProfileAssignmentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ProfileAssignment = append(c.inters.ProfileAssignment, interceptors...)
+}
+
+// Create returns a builder for creating a ProfileAssignment entity.
+func (c *ProfileAssignmentClient) Create() *ProfileAssignmentCreate {
+	mutation := newProfileAssignmentMutation(c.config, OpCreate)
+	return &ProfileAssignmentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ProfileAssignment entities.
+func (c *ProfileAssignmentClient) CreateBulk(builders ...*ProfileAssignmentCreate) *ProfileAssignmentCreateBulk {
+	return &ProfileAssignmentCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ProfileAssignmentClient) MapCreateBulk(slice any, setFunc func(*ProfileAssignmentCreate, int)) *ProfileAssignmentCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ProfileAssignmentCreateBulk{err: fmt.Errorf("calling to ProfileAssignmentClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ProfileAssignmentCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ProfileAssignmentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ProfileAssignment.
+func (c *ProfileAssignmentClient) Update() *ProfileAssignmentUpdate {
+	mutation := newProfileAssignmentMutation(c.config, OpUpdate)
+	return &ProfileAssignmentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ProfileAssignmentClient) UpdateOne(_m *ProfileAssignment) *ProfileAssignmentUpdateOne {
+	mutation := newProfileAssignmentMutation(c.config, OpUpdateOne, withProfileAssignment(_m))
+	return &ProfileAssignmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ProfileAssignmentClient) UpdateOneID(id string) *ProfileAssignmentUpdateOne {
+	mutation := newProfileAssignmentMutation(c.config, OpUpdateOne, withProfileAssignmentID(id))
+	return &ProfileAssignmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ProfileAssignment.
+func (c *ProfileAssignmentClient) Delete() *ProfileAssignmentDelete {
+	mutation := newProfileAssignmentMutation(c.config, OpDelete)
+	return &ProfileAssignmentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ProfileAssignmentClient) DeleteOne(_m *ProfileAssignment) *ProfileAssignmentDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ProfileAssignmentClient) DeleteOneID(id string) *ProfileAssignmentDeleteOne {
+	builder := c.Delete().Where(profileassignment.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ProfileAssignmentDeleteOne{builder}
+}
+
+// Query returns a query builder for ProfileAssignment.
+func (c *ProfileAssignmentClient) Query() *ProfileAssignmentQuery {
+	return &ProfileAssignmentQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeProfileAssignment},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ProfileAssignment entity by its id.
+func (c *ProfileAssignmentClient) Get(ctx context.Context, id string) (*ProfileAssignment, error) {
+	return c.Query().Where(profileassignment.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ProfileAssignmentClient) GetX(ctx context.Context, id string) *ProfileAssignment {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ProfileAssignmentClient) Hooks() []Hook {
+	return c.hooks.ProfileAssignment
+}
+
+// Interceptors returns the client interceptors.
+func (c *ProfileAssignmentClient) Interceptors() []Interceptor {
+	return c.inters.ProfileAssignment
+}
+
+func (c *ProfileAssignmentClient) mutate(ctx context.Context, m *ProfileAssignmentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ProfileAssignmentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ProfileAssignmentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ProfileAssignmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ProfileAssignmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ProfileAssignment mutation op: %q", m.Op())
+	}
+}
+
 // RankOverrideClient is a client for the RankOverride schema.
 type RankOverrideClient struct {
 	config
@@ -1896,12 +2037,12 @@ func (c *SyncMetaClient) mutate(ctx context.Context, m *SyncMetaMutation) (Value
 type (
 	hooks struct {
 		CustomFieldDef, DimensionOption, Evidence, Item, ItemAugment,
-		OpportunityAssessment, OpportunitySpec, PortfolioDimension, RankOverride,
-		Release, ReportDataset, SyncMeta []ent.Hook
+		OpportunityAssessment, OpportunitySpec, PortfolioDimension, ProfileAssignment,
+		RankOverride, Release, ReportDataset, SyncMeta []ent.Hook
 	}
 	inters struct {
 		CustomFieldDef, DimensionOption, Evidence, Item, ItemAugment,
-		OpportunityAssessment, OpportunitySpec, PortfolioDimension, RankOverride,
-		Release, ReportDataset, SyncMeta []ent.Interceptor
+		OpportunityAssessment, OpportunitySpec, PortfolioDimension, ProfileAssignment,
+		RankOverride, Release, ReportDataset, SyncMeta []ent.Interceptor
 	}
 )

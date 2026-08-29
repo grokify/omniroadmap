@@ -47,6 +47,8 @@ type OpportunityAssessment struct {
 	KanoCategory string `json:"kano_category,omitempty"`
 	// MihCategory holds the value of the "mih_category" field.
 	MihCategory string `json:"mih_category,omitempty"`
+	// CompassProfileID holds the value of the "compass_profile_id" field.
+	CompassProfileID string `json:"compass_profile_id,omitempty"`
 	// Canonical holds the value of the "canonical" field.
 	Canonical assessment.OpportunityAssessment `json:"canonical,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -69,7 +71,7 @@ func (*OpportunityAssessment) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullFloat64)
 		case opportunityassessment.FieldCycleNumber, opportunityassessment.FieldOpportunityRankCalculated, opportunityassessment.FieldOpportunityRankFinal:
 			values[i] = new(sql.NullInt64)
-		case opportunityassessment.FieldID, opportunityassessment.FieldOpportunitySpecID, opportunityassessment.FieldRmiID, opportunityassessment.FieldTitle, opportunityassessment.FieldSupersedesID, opportunityassessment.FieldMoscowClass, opportunityassessment.FieldKanoCategory, opportunityassessment.FieldMihCategory:
+		case opportunityassessment.FieldID, opportunityassessment.FieldOpportunitySpecID, opportunityassessment.FieldRmiID, opportunityassessment.FieldTitle, opportunityassessment.FieldSupersedesID, opportunityassessment.FieldMoscowClass, opportunityassessment.FieldKanoCategory, opportunityassessment.FieldMihCategory, opportunityassessment.FieldCompassProfileID:
 			values[i] = new(sql.NullString)
 		case opportunityassessment.FieldAssessedAt, opportunityassessment.FieldCreatedAt, opportunityassessment.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -181,6 +183,12 @@ func (_m *OpportunityAssessment) assignValues(columns []string, values []any) er
 			} else if value.Valid {
 				_m.MihCategory = value.String
 			}
+		case opportunityassessment.FieldCompassProfileID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field compass_profile_id", values[i])
+			} else if value.Valid {
+				_m.CompassProfileID = value.String
+			}
 		case opportunityassessment.FieldCanonical:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field canonical", values[i])
@@ -284,6 +292,9 @@ func (_m *OpportunityAssessment) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("mih_category=")
 	builder.WriteString(_m.MihCategory)
+	builder.WriteString(", ")
+	builder.WriteString("compass_profile_id=")
+	builder.WriteString(_m.CompassProfileID)
 	builder.WriteString(", ")
 	builder.WriteString("canonical=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Canonical))

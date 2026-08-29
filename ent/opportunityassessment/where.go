@@ -134,6 +134,11 @@ func MihCategory(v string) predicate.OpportunityAssessment {
 	return predicate.OpportunityAssessment(sql.FieldEQ(FieldMihCategory, v))
 }
 
+// CompassProfileID applies equality check predicate on the "compass_profile_id" field. It's identical to CompassProfileIDEQ.
+func CompassProfileID(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldEQ(FieldCompassProfileID, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.OpportunityAssessment {
 	return predicate.OpportunityAssessment(sql.FieldEQ(FieldCreatedAt, v))
@@ -907,6 +912,81 @@ func MihCategoryEqualFold(v string) predicate.OpportunityAssessment {
 // MihCategoryContainsFold applies the ContainsFold predicate on the "mih_category" field.
 func MihCategoryContainsFold(v string) predicate.OpportunityAssessment {
 	return predicate.OpportunityAssessment(sql.FieldContainsFold(FieldMihCategory, v))
+}
+
+// CompassProfileIDEQ applies the EQ predicate on the "compass_profile_id" field.
+func CompassProfileIDEQ(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldEQ(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDNEQ applies the NEQ predicate on the "compass_profile_id" field.
+func CompassProfileIDNEQ(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldNEQ(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDIn applies the In predicate on the "compass_profile_id" field.
+func CompassProfileIDIn(vs ...string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldIn(FieldCompassProfileID, vs...))
+}
+
+// CompassProfileIDNotIn applies the NotIn predicate on the "compass_profile_id" field.
+func CompassProfileIDNotIn(vs ...string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldNotIn(FieldCompassProfileID, vs...))
+}
+
+// CompassProfileIDGT applies the GT predicate on the "compass_profile_id" field.
+func CompassProfileIDGT(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldGT(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDGTE applies the GTE predicate on the "compass_profile_id" field.
+func CompassProfileIDGTE(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldGTE(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDLT applies the LT predicate on the "compass_profile_id" field.
+func CompassProfileIDLT(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldLT(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDLTE applies the LTE predicate on the "compass_profile_id" field.
+func CompassProfileIDLTE(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldLTE(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDContains applies the Contains predicate on the "compass_profile_id" field.
+func CompassProfileIDContains(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldContains(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDHasPrefix applies the HasPrefix predicate on the "compass_profile_id" field.
+func CompassProfileIDHasPrefix(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldHasPrefix(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDHasSuffix applies the HasSuffix predicate on the "compass_profile_id" field.
+func CompassProfileIDHasSuffix(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldHasSuffix(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDIsNil applies the IsNil predicate on the "compass_profile_id" field.
+func CompassProfileIDIsNil() predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldIsNull(FieldCompassProfileID))
+}
+
+// CompassProfileIDNotNil applies the NotNil predicate on the "compass_profile_id" field.
+func CompassProfileIDNotNil() predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldNotNull(FieldCompassProfileID))
+}
+
+// CompassProfileIDEqualFold applies the EqualFold predicate on the "compass_profile_id" field.
+func CompassProfileIDEqualFold(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldEqualFold(FieldCompassProfileID, v))
+}
+
+// CompassProfileIDContainsFold applies the ContainsFold predicate on the "compass_profile_id" field.
+func CompassProfileIDContainsFold(v string) predicate.OpportunityAssessment {
+	return predicate.OpportunityAssessment(sql.FieldContainsFold(FieldCompassProfileID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

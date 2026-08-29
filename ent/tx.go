@@ -28,6 +28,8 @@ type Tx struct {
 	OpportunitySpec *OpportunitySpecClient
 	// PortfolioDimension is the client for interacting with the PortfolioDimension builders.
 	PortfolioDimension *PortfolioDimensionClient
+	// ProfileAssignment is the client for interacting with the ProfileAssignment builders.
+	ProfileAssignment *ProfileAssignmentClient
 	// RankOverride is the client for interacting with the RankOverride builders.
 	RankOverride *RankOverrideClient
 	// Release is the client for interacting with the Release builders.
@@ -175,6 +177,7 @@ func (tx *Tx) init() {
 	tx.OpportunityAssessment = NewOpportunityAssessmentClient(tx.config)
 	tx.OpportunitySpec = NewOpportunitySpecClient(tx.config)
 	tx.PortfolioDimension = NewPortfolioDimensionClient(tx.config)
+	tx.ProfileAssignment = NewProfileAssignmentClient(tx.config)
 	tx.RankOverride = NewRankOverrideClient(tx.config)
 	tx.Release = NewReleaseClient(tx.config)
 	tx.ReportDataset = NewReportDatasetClient(tx.config)

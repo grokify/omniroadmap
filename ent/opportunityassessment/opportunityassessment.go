@@ -41,6 +41,8 @@ const (
 	FieldKanoCategory = "kano_category"
 	// FieldMihCategory holds the string denoting the mih_category field in the database.
 	FieldMihCategory = "mih_category"
+	// FieldCompassProfileID holds the string denoting the compass_profile_id field in the database.
+	FieldCompassProfileID = "compass_profile_id"
 	// FieldCanonical holds the string denoting the canonical field in the database.
 	FieldCanonical = "canonical"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -68,6 +70,7 @@ var Columns = []string{
 	FieldOpportunityRankFinal,
 	FieldKanoCategory,
 	FieldMihCategory,
+	FieldCompassProfileID,
 	FieldCanonical,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -104,6 +107,8 @@ var (
 	KanoCategoryValidator func(string) error
 	// MihCategoryValidator is a validator for the "mih_category" field. It is called by the builders before save.
 	MihCategoryValidator func(string) error
+	// CompassProfileIDValidator is a validator for the "compass_profile_id" field. It is called by the builders before save.
+	CompassProfileIDValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -190,6 +195,11 @@ func ByKanoCategory(opts ...sql.OrderTermOption) OrderOption {
 // ByMihCategory orders the results by the mih_category field.
 func ByMihCategory(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMihCategory, opts...).ToFunc()
+}
+
+// ByCompassProfileID orders the results by the compass_profile_id field.
+func ByCompassProfileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCompassProfileID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

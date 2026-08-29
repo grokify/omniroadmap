@@ -220,6 +220,7 @@ var (
 		{Name: "opportunity_rank_final", Type: field.TypeInt, Nullable: true},
 		{Name: "kano_category", Type: field.TypeString, Nullable: true, Size: 64},
 		{Name: "mih_category", Type: field.TypeString, Nullable: true, Size: 64},
+		{Name: "compass_profile_id", Type: field.TypeString, Nullable: true, Size: 64},
 		{Name: "canonical", Type: field.TypeJSON},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -264,6 +265,11 @@ var (
 				Name:    "opportunityassessment_mih_category",
 				Unique:  false,
 				Columns: []*schema.Column{OpportunityAssessmentsColumns[14]},
+			},
+			{
+				Name:    "opportunityassessment_compass_profile_id",
+				Unique:  false,
+				Columns: []*schema.Column{OpportunityAssessmentsColumns[15]},
 			},
 		},
 	}
@@ -318,6 +324,38 @@ var (
 				Name:    "portfoliodimension_built_in",
 				Unique:  false,
 				Columns: []*schema.Column{PortfolioDimensionsColumns[5]},
+			},
+		},
+	}
+	// ProfileAssignmentsColumns holds the columns for the "profile_assignments" table.
+	ProfileAssignmentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Size: 255},
+		{Name: "profile_id", Type: field.TypeString, Size: 64},
+		{Name: "secondary", Type: field.TypeJSON, Nullable: true},
+		{Name: "rationale", Type: field.TypeString, Size: 2147483647},
+		{Name: "proposed_by", Type: field.TypeString, Size: 255},
+		{Name: "status", Type: field.TypeString, Size: 32},
+		{Name: "confirmed_by", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "confirmed_at", Type: field.TypeTime, Nullable: true},
+		{Name: "evidence_ids", Type: field.TypeJSON, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// ProfileAssignmentsTable holds the schema information for the "profile_assignments" table.
+	ProfileAssignmentsTable = &schema.Table{
+		Name:       "profile_assignments",
+		Columns:    ProfileAssignmentsColumns,
+		PrimaryKey: []*schema.Column{ProfileAssignmentsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "profileassignment_profile_id",
+				Unique:  false,
+				Columns: []*schema.Column{ProfileAssignmentsColumns[1]},
+			},
+			{
+				Name:    "profileassignment_status",
+				Unique:  false,
+				Columns: []*schema.Column{ProfileAssignmentsColumns[5]},
 			},
 		},
 	}
@@ -439,6 +477,7 @@ var (
 		OpportunityAssessmentsTable,
 		OpportunitySpecsTable,
 		PortfolioDimensionsTable,
+		ProfileAssignmentsTable,
 		RankOverridesTable,
 		ReleasesTable,
 		ReportDatasetsTable,

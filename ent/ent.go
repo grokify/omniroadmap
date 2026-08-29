@@ -20,6 +20,7 @@ import (
 	"github.com/grokify/omniroadmap/ent/opportunityassessment"
 	"github.com/grokify/omniroadmap/ent/opportunityspec"
 	"github.com/grokify/omniroadmap/ent/portfoliodimension"
+	"github.com/grokify/omniroadmap/ent/profileassignment"
 	"github.com/grokify/omniroadmap/ent/rankoverride"
 	"github.com/grokify/omniroadmap/ent/release"
 	"github.com/grokify/omniroadmap/ent/reportdataset"
@@ -92,6 +93,7 @@ func checkColumn(t, c string) error {
 			opportunityassessment.Table: opportunityassessment.ValidColumn,
 			opportunityspec.Table:       opportunityspec.ValidColumn,
 			portfoliodimension.Table:    portfoliodimension.ValidColumn,
+			profileassignment.Table:     profileassignment.ValidColumn,
 			rankoverride.Table:          rankoverride.ValidColumn,
 			release.Table:               release.ValidColumn,
 			reportdataset.Table:         reportdataset.ValidColumn,

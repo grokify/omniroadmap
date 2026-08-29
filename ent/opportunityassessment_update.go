@@ -307,6 +307,26 @@ func (_u *OpportunityAssessmentUpdate) ClearMihCategory() *OpportunityAssessment
 	return _u
 }
 
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (_u *OpportunityAssessmentUpdate) SetCompassProfileID(v string) *OpportunityAssessmentUpdate {
+	_u.mutation.SetCompassProfileID(v)
+	return _u
+}
+
+// SetNillableCompassProfileID sets the "compass_profile_id" field if the given value is not nil.
+func (_u *OpportunityAssessmentUpdate) SetNillableCompassProfileID(v *string) *OpportunityAssessmentUpdate {
+	if v != nil {
+		_u.SetCompassProfileID(*v)
+	}
+	return _u
+}
+
+// ClearCompassProfileID clears the value of the "compass_profile_id" field.
+func (_u *OpportunityAssessmentUpdate) ClearCompassProfileID() *OpportunityAssessmentUpdate {
+	_u.mutation.ClearCompassProfileID()
+	return _u
+}
+
 // SetCanonical sets the "canonical" field.
 func (_u *OpportunityAssessmentUpdate) SetCanonical(v assessment.OpportunityAssessment) *OpportunityAssessmentUpdate {
 	_u.mutation.SetCanonical(v)
@@ -403,6 +423,11 @@ func (_u *OpportunityAssessmentUpdate) check() error {
 	if v, ok := _u.mutation.MihCategory(); ok {
 		if err := opportunityassessment.MihCategoryValidator(v); err != nil {
 			return &ValidationError{Name: "mih_category", err: fmt.Errorf(`ent: validator failed for field "OpportunityAssessment.mih_category": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.CompassProfileID(); ok {
+		if err := opportunityassessment.CompassProfileIDValidator(v); err != nil {
+			return &ValidationError{Name: "compass_profile_id", err: fmt.Errorf(`ent: validator failed for field "OpportunityAssessment.compass_profile_id": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.Canonical(); ok {
@@ -505,6 +530,12 @@ func (_u *OpportunityAssessmentUpdate) sqlSave(ctx context.Context) (_node int, 
 	}
 	if _u.mutation.MihCategoryCleared() {
 		_spec.ClearField(opportunityassessment.FieldMihCategory, field.TypeString)
+	}
+	if value, ok := _u.mutation.CompassProfileID(); ok {
+		_spec.SetField(opportunityassessment.FieldCompassProfileID, field.TypeString, value)
+	}
+	if _u.mutation.CompassProfileIDCleared() {
+		_spec.ClearField(opportunityassessment.FieldCompassProfileID, field.TypeString)
 	}
 	if value, ok := _u.mutation.Canonical(); ok {
 		_spec.SetField(opportunityassessment.FieldCanonical, field.TypeJSON, value)
@@ -810,6 +841,26 @@ func (_u *OpportunityAssessmentUpdateOne) ClearMihCategory() *OpportunityAssessm
 	return _u
 }
 
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (_u *OpportunityAssessmentUpdateOne) SetCompassProfileID(v string) *OpportunityAssessmentUpdateOne {
+	_u.mutation.SetCompassProfileID(v)
+	return _u
+}
+
+// SetNillableCompassProfileID sets the "compass_profile_id" field if the given value is not nil.
+func (_u *OpportunityAssessmentUpdateOne) SetNillableCompassProfileID(v *string) *OpportunityAssessmentUpdateOne {
+	if v != nil {
+		_u.SetCompassProfileID(*v)
+	}
+	return _u
+}
+
+// ClearCompassProfileID clears the value of the "compass_profile_id" field.
+func (_u *OpportunityAssessmentUpdateOne) ClearCompassProfileID() *OpportunityAssessmentUpdateOne {
+	_u.mutation.ClearCompassProfileID()
+	return _u
+}
+
 // SetCanonical sets the "canonical" field.
 func (_u *OpportunityAssessmentUpdateOne) SetCanonical(v assessment.OpportunityAssessment) *OpportunityAssessmentUpdateOne {
 	_u.mutation.SetCanonical(v)
@@ -919,6 +970,11 @@ func (_u *OpportunityAssessmentUpdateOne) check() error {
 	if v, ok := _u.mutation.MihCategory(); ok {
 		if err := opportunityassessment.MihCategoryValidator(v); err != nil {
 			return &ValidationError{Name: "mih_category", err: fmt.Errorf(`ent: validator failed for field "OpportunityAssessment.mih_category": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.CompassProfileID(); ok {
+		if err := opportunityassessment.CompassProfileIDValidator(v); err != nil {
+			return &ValidationError{Name: "compass_profile_id", err: fmt.Errorf(`ent: validator failed for field "OpportunityAssessment.compass_profile_id": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.Canonical(); ok {
@@ -1038,6 +1094,12 @@ func (_u *OpportunityAssessmentUpdateOne) sqlSave(ctx context.Context) (_node *O
 	}
 	if _u.mutation.MihCategoryCleared() {
 		_spec.ClearField(opportunityassessment.FieldMihCategory, field.TypeString)
+	}
+	if value, ok := _u.mutation.CompassProfileID(); ok {
+		_spec.SetField(opportunityassessment.FieldCompassProfileID, field.TypeString, value)
+	}
+	if _u.mutation.CompassProfileIDCleared() {
+		_spec.ClearField(opportunityassessment.FieldCompassProfileID, field.TypeString)
 	}
 	if value, ok := _u.mutation.Canonical(); ok {
 		_spec.SetField(opportunityassessment.FieldCanonical, field.TypeJSON, value)

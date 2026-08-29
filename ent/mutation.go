@@ -20,6 +20,7 @@ import (
 	"github.com/grokify/omniroadmap/ent/opportunityspec"
 	"github.com/grokify/omniroadmap/ent/portfoliodimension"
 	"github.com/grokify/omniroadmap/ent/predicate"
+	"github.com/grokify/omniroadmap/ent/profileassignment"
 	"github.com/grokify/omniroadmap/ent/rankoverride"
 	"github.com/grokify/omniroadmap/ent/release"
 	"github.com/grokify/omniroadmap/ent/reportdataset"
@@ -45,6 +46,7 @@ const (
 	TypeOpportunityAssessment = "OpportunityAssessment"
 	TypeOpportunitySpec       = "OpportunitySpec"
 	TypePortfolioDimension    = "PortfolioDimension"
+	TypeProfileAssignment     = "ProfileAssignment"
 	TypeRankOverride          = "RankOverride"
 	TypeRelease               = "Release"
 	TypeReportDataset         = "ReportDataset"
@@ -5584,6 +5586,7 @@ type OpportunityAssessmentMutation struct {
 	addopportunity_rank_final      *int
 	kano_category                  *string
 	mih_category                   *string
+	compass_profile_id             *string
 	canonical                      *assessment.OpportunityAssessment
 	created_at                     *time.Time
 	updated_at                     *time.Time
@@ -6401,6 +6404,55 @@ func (m *OpportunityAssessmentMutation) ResetMihCategory() {
 	delete(m.clearedFields, opportunityassessment.FieldMihCategory)
 }
 
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (m *OpportunityAssessmentMutation) SetCompassProfileID(s string) {
+	m.compass_profile_id = &s
+}
+
+// CompassProfileID returns the value of the "compass_profile_id" field in the mutation.
+func (m *OpportunityAssessmentMutation) CompassProfileID() (r string, exists bool) {
+	v := m.compass_profile_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCompassProfileID returns the old "compass_profile_id" field's value of the OpportunityAssessment entity.
+// If the OpportunityAssessment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OpportunityAssessmentMutation) OldCompassProfileID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCompassProfileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCompassProfileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCompassProfileID: %w", err)
+	}
+	return oldValue.CompassProfileID, nil
+}
+
+// ClearCompassProfileID clears the value of the "compass_profile_id" field.
+func (m *OpportunityAssessmentMutation) ClearCompassProfileID() {
+	m.compass_profile_id = nil
+	m.clearedFields[opportunityassessment.FieldCompassProfileID] = struct{}{}
+}
+
+// CompassProfileIDCleared returns if the "compass_profile_id" field was cleared in this mutation.
+func (m *OpportunityAssessmentMutation) CompassProfileIDCleared() bool {
+	_, ok := m.clearedFields[opportunityassessment.FieldCompassProfileID]
+	return ok
+}
+
+// ResetCompassProfileID resets all changes to the "compass_profile_id" field.
+func (m *OpportunityAssessmentMutation) ResetCompassProfileID() {
+	m.compass_profile_id = nil
+	delete(m.clearedFields, opportunityassessment.FieldCompassProfileID)
+}
+
 // SetCanonical sets the "canonical" field.
 func (m *OpportunityAssessmentMutation) SetCanonical(aa assessment.OpportunityAssessment) {
 	m.canonical = &aa
@@ -6543,7 +6595,7 @@ func (m *OpportunityAssessmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OpportunityAssessmentMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.opportunity_spec_id != nil {
 		fields = append(fields, opportunityassessment.FieldOpportunitySpecID)
 	}
@@ -6585,6 +6637,9 @@ func (m *OpportunityAssessmentMutation) Fields() []string {
 	}
 	if m.mih_category != nil {
 		fields = append(fields, opportunityassessment.FieldMihCategory)
+	}
+	if m.compass_profile_id != nil {
+		fields = append(fields, opportunityassessment.FieldCompassProfileID)
 	}
 	if m.canonical != nil {
 		fields = append(fields, opportunityassessment.FieldCanonical)
@@ -6631,6 +6686,8 @@ func (m *OpportunityAssessmentMutation) Field(name string) (ent.Value, bool) {
 		return m.KanoCategory()
 	case opportunityassessment.FieldMihCategory:
 		return m.MihCategory()
+	case opportunityassessment.FieldCompassProfileID:
+		return m.CompassProfileID()
 	case opportunityassessment.FieldCanonical:
 		return m.Canonical()
 	case opportunityassessment.FieldCreatedAt:
@@ -6674,6 +6731,8 @@ func (m *OpportunityAssessmentMutation) OldField(ctx context.Context, name strin
 		return m.OldKanoCategory(ctx)
 	case opportunityassessment.FieldMihCategory:
 		return m.OldMihCategory(ctx)
+	case opportunityassessment.FieldCompassProfileID:
+		return m.OldCompassProfileID(ctx)
 	case opportunityassessment.FieldCanonical:
 		return m.OldCanonical(ctx)
 	case opportunityassessment.FieldCreatedAt:
@@ -6786,6 +6845,13 @@ func (m *OpportunityAssessmentMutation) SetField(name string, value ent.Value) e
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMihCategory(v)
+		return nil
+	case opportunityassessment.FieldCompassProfileID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCompassProfileID(v)
 		return nil
 	case opportunityassessment.FieldCanonical:
 		v, ok := value.(assessment.OpportunityAssessment)
@@ -6916,6 +6982,9 @@ func (m *OpportunityAssessmentMutation) ClearedFields() []string {
 	if m.FieldCleared(opportunityassessment.FieldMihCategory) {
 		fields = append(fields, opportunityassessment.FieldMihCategory)
 	}
+	if m.FieldCleared(opportunityassessment.FieldCompassProfileID) {
+		fields = append(fields, opportunityassessment.FieldCompassProfileID)
+	}
 	return fields
 }
 
@@ -6956,6 +7025,9 @@ func (m *OpportunityAssessmentMutation) ClearField(name string) error {
 		return nil
 	case opportunityassessment.FieldMihCategory:
 		m.ClearMihCategory()
+		return nil
+	case opportunityassessment.FieldCompassProfileID:
+		m.ClearCompassProfileID()
 		return nil
 	}
 	return fmt.Errorf("unknown OpportunityAssessment nullable field %s", name)
@@ -7006,6 +7078,9 @@ func (m *OpportunityAssessmentMutation) ResetField(name string) error {
 		return nil
 	case opportunityassessment.FieldMihCategory:
 		m.ResetMihCategory()
+		return nil
+	case opportunityassessment.FieldCompassProfileID:
+		m.ResetCompassProfileID()
 		return nil
 	case opportunityassessment.FieldCanonical:
 		m.ResetCanonical()
@@ -8184,6 +8259,937 @@ func (m *PortfolioDimensionMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *PortfolioDimensionMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown PortfolioDimension edge %s", name)
+}
+
+// ProfileAssignmentMutation represents an operation that mutates the ProfileAssignment nodes in the graph.
+type ProfileAssignmentMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *string
+	profile_id         *string
+	secondary          *[]string
+	appendsecondary    []string
+	rationale          *string
+	proposed_by        *string
+	status             *string
+	confirmed_by       *string
+	confirmed_at       *time.Time
+	evidence_ids       *[]string
+	appendevidence_ids []string
+	created_at         *time.Time
+	updated_at         *time.Time
+	clearedFields      map[string]struct{}
+	done               bool
+	oldValue           func(context.Context) (*ProfileAssignment, error)
+	predicates         []predicate.ProfileAssignment
+}
+
+var _ ent.Mutation = (*ProfileAssignmentMutation)(nil)
+
+// profileassignmentOption allows management of the mutation configuration using functional options.
+type profileassignmentOption func(*ProfileAssignmentMutation)
+
+// newProfileAssignmentMutation creates new mutation for the ProfileAssignment entity.
+func newProfileAssignmentMutation(c config, op Op, opts ...profileassignmentOption) *ProfileAssignmentMutation {
+	m := &ProfileAssignmentMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeProfileAssignment,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withProfileAssignmentID sets the ID field of the mutation.
+func withProfileAssignmentID(id string) profileassignmentOption {
+	return func(m *ProfileAssignmentMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ProfileAssignment
+		)
+		m.oldValue = func(ctx context.Context) (*ProfileAssignment, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ProfileAssignment.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withProfileAssignment sets the old ProfileAssignment of the mutation.
+func withProfileAssignment(node *ProfileAssignment) profileassignmentOption {
+	return func(m *ProfileAssignmentMutation) {
+		m.oldValue = func(context.Context) (*ProfileAssignment, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ProfileAssignmentMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ProfileAssignmentMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ProfileAssignment entities.
+func (m *ProfileAssignmentMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ProfileAssignmentMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ProfileAssignmentMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ProfileAssignment.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetProfileID sets the "profile_id" field.
+func (m *ProfileAssignmentMutation) SetProfileID(s string) {
+	m.profile_id = &s
+}
+
+// ProfileID returns the value of the "profile_id" field in the mutation.
+func (m *ProfileAssignmentMutation) ProfileID() (r string, exists bool) {
+	v := m.profile_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProfileID returns the old "profile_id" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldProfileID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProfileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProfileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProfileID: %w", err)
+	}
+	return oldValue.ProfileID, nil
+}
+
+// ResetProfileID resets all changes to the "profile_id" field.
+func (m *ProfileAssignmentMutation) ResetProfileID() {
+	m.profile_id = nil
+}
+
+// SetSecondary sets the "secondary" field.
+func (m *ProfileAssignmentMutation) SetSecondary(s []string) {
+	m.secondary = &s
+	m.appendsecondary = nil
+}
+
+// Secondary returns the value of the "secondary" field in the mutation.
+func (m *ProfileAssignmentMutation) Secondary() (r []string, exists bool) {
+	v := m.secondary
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSecondary returns the old "secondary" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldSecondary(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSecondary is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSecondary requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSecondary: %w", err)
+	}
+	return oldValue.Secondary, nil
+}
+
+// AppendSecondary adds s to the "secondary" field.
+func (m *ProfileAssignmentMutation) AppendSecondary(s []string) {
+	m.appendsecondary = append(m.appendsecondary, s...)
+}
+
+// AppendedSecondary returns the list of values that were appended to the "secondary" field in this mutation.
+func (m *ProfileAssignmentMutation) AppendedSecondary() ([]string, bool) {
+	if len(m.appendsecondary) == 0 {
+		return nil, false
+	}
+	return m.appendsecondary, true
+}
+
+// ClearSecondary clears the value of the "secondary" field.
+func (m *ProfileAssignmentMutation) ClearSecondary() {
+	m.secondary = nil
+	m.appendsecondary = nil
+	m.clearedFields[profileassignment.FieldSecondary] = struct{}{}
+}
+
+// SecondaryCleared returns if the "secondary" field was cleared in this mutation.
+func (m *ProfileAssignmentMutation) SecondaryCleared() bool {
+	_, ok := m.clearedFields[profileassignment.FieldSecondary]
+	return ok
+}
+
+// ResetSecondary resets all changes to the "secondary" field.
+func (m *ProfileAssignmentMutation) ResetSecondary() {
+	m.secondary = nil
+	m.appendsecondary = nil
+	delete(m.clearedFields, profileassignment.FieldSecondary)
+}
+
+// SetRationale sets the "rationale" field.
+func (m *ProfileAssignmentMutation) SetRationale(s string) {
+	m.rationale = &s
+}
+
+// Rationale returns the value of the "rationale" field in the mutation.
+func (m *ProfileAssignmentMutation) Rationale() (r string, exists bool) {
+	v := m.rationale
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRationale returns the old "rationale" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldRationale(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRationale is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRationale requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRationale: %w", err)
+	}
+	return oldValue.Rationale, nil
+}
+
+// ResetRationale resets all changes to the "rationale" field.
+func (m *ProfileAssignmentMutation) ResetRationale() {
+	m.rationale = nil
+}
+
+// SetProposedBy sets the "proposed_by" field.
+func (m *ProfileAssignmentMutation) SetProposedBy(s string) {
+	m.proposed_by = &s
+}
+
+// ProposedBy returns the value of the "proposed_by" field in the mutation.
+func (m *ProfileAssignmentMutation) ProposedBy() (r string, exists bool) {
+	v := m.proposed_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProposedBy returns the old "proposed_by" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldProposedBy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProposedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProposedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProposedBy: %w", err)
+	}
+	return oldValue.ProposedBy, nil
+}
+
+// ResetProposedBy resets all changes to the "proposed_by" field.
+func (m *ProfileAssignmentMutation) ResetProposedBy() {
+	m.proposed_by = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *ProfileAssignmentMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *ProfileAssignmentMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *ProfileAssignmentMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetConfirmedBy sets the "confirmed_by" field.
+func (m *ProfileAssignmentMutation) SetConfirmedBy(s string) {
+	m.confirmed_by = &s
+}
+
+// ConfirmedBy returns the value of the "confirmed_by" field in the mutation.
+func (m *ProfileAssignmentMutation) ConfirmedBy() (r string, exists bool) {
+	v := m.confirmed_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConfirmedBy returns the old "confirmed_by" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldConfirmedBy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConfirmedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConfirmedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConfirmedBy: %w", err)
+	}
+	return oldValue.ConfirmedBy, nil
+}
+
+// ClearConfirmedBy clears the value of the "confirmed_by" field.
+func (m *ProfileAssignmentMutation) ClearConfirmedBy() {
+	m.confirmed_by = nil
+	m.clearedFields[profileassignment.FieldConfirmedBy] = struct{}{}
+}
+
+// ConfirmedByCleared returns if the "confirmed_by" field was cleared in this mutation.
+func (m *ProfileAssignmentMutation) ConfirmedByCleared() bool {
+	_, ok := m.clearedFields[profileassignment.FieldConfirmedBy]
+	return ok
+}
+
+// ResetConfirmedBy resets all changes to the "confirmed_by" field.
+func (m *ProfileAssignmentMutation) ResetConfirmedBy() {
+	m.confirmed_by = nil
+	delete(m.clearedFields, profileassignment.FieldConfirmedBy)
+}
+
+// SetConfirmedAt sets the "confirmed_at" field.
+func (m *ProfileAssignmentMutation) SetConfirmedAt(t time.Time) {
+	m.confirmed_at = &t
+}
+
+// ConfirmedAt returns the value of the "confirmed_at" field in the mutation.
+func (m *ProfileAssignmentMutation) ConfirmedAt() (r time.Time, exists bool) {
+	v := m.confirmed_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConfirmedAt returns the old "confirmed_at" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldConfirmedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConfirmedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConfirmedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConfirmedAt: %w", err)
+	}
+	return oldValue.ConfirmedAt, nil
+}
+
+// ClearConfirmedAt clears the value of the "confirmed_at" field.
+func (m *ProfileAssignmentMutation) ClearConfirmedAt() {
+	m.confirmed_at = nil
+	m.clearedFields[profileassignment.FieldConfirmedAt] = struct{}{}
+}
+
+// ConfirmedAtCleared returns if the "confirmed_at" field was cleared in this mutation.
+func (m *ProfileAssignmentMutation) ConfirmedAtCleared() bool {
+	_, ok := m.clearedFields[profileassignment.FieldConfirmedAt]
+	return ok
+}
+
+// ResetConfirmedAt resets all changes to the "confirmed_at" field.
+func (m *ProfileAssignmentMutation) ResetConfirmedAt() {
+	m.confirmed_at = nil
+	delete(m.clearedFields, profileassignment.FieldConfirmedAt)
+}
+
+// SetEvidenceIds sets the "evidence_ids" field.
+func (m *ProfileAssignmentMutation) SetEvidenceIds(s []string) {
+	m.evidence_ids = &s
+	m.appendevidence_ids = nil
+}
+
+// EvidenceIds returns the value of the "evidence_ids" field in the mutation.
+func (m *ProfileAssignmentMutation) EvidenceIds() (r []string, exists bool) {
+	v := m.evidence_ids
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEvidenceIds returns the old "evidence_ids" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldEvidenceIds(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEvidenceIds is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEvidenceIds requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEvidenceIds: %w", err)
+	}
+	return oldValue.EvidenceIds, nil
+}
+
+// AppendEvidenceIds adds s to the "evidence_ids" field.
+func (m *ProfileAssignmentMutation) AppendEvidenceIds(s []string) {
+	m.appendevidence_ids = append(m.appendevidence_ids, s...)
+}
+
+// AppendedEvidenceIds returns the list of values that were appended to the "evidence_ids" field in this mutation.
+func (m *ProfileAssignmentMutation) AppendedEvidenceIds() ([]string, bool) {
+	if len(m.appendevidence_ids) == 0 {
+		return nil, false
+	}
+	return m.appendevidence_ids, true
+}
+
+// ClearEvidenceIds clears the value of the "evidence_ids" field.
+func (m *ProfileAssignmentMutation) ClearEvidenceIds() {
+	m.evidence_ids = nil
+	m.appendevidence_ids = nil
+	m.clearedFields[profileassignment.FieldEvidenceIds] = struct{}{}
+}
+
+// EvidenceIdsCleared returns if the "evidence_ids" field was cleared in this mutation.
+func (m *ProfileAssignmentMutation) EvidenceIdsCleared() bool {
+	_, ok := m.clearedFields[profileassignment.FieldEvidenceIds]
+	return ok
+}
+
+// ResetEvidenceIds resets all changes to the "evidence_ids" field.
+func (m *ProfileAssignmentMutation) ResetEvidenceIds() {
+	m.evidence_ids = nil
+	m.appendevidence_ids = nil
+	delete(m.clearedFields, profileassignment.FieldEvidenceIds)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ProfileAssignmentMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ProfileAssignmentMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ProfileAssignmentMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ProfileAssignmentMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ProfileAssignmentMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ProfileAssignment entity.
+// If the ProfileAssignment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileAssignmentMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ProfileAssignmentMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the ProfileAssignmentMutation builder.
+func (m *ProfileAssignmentMutation) Where(ps ...predicate.ProfileAssignment) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ProfileAssignmentMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ProfileAssignmentMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ProfileAssignment, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ProfileAssignmentMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ProfileAssignmentMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ProfileAssignment).
+func (m *ProfileAssignmentMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ProfileAssignmentMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m.profile_id != nil {
+		fields = append(fields, profileassignment.FieldProfileID)
+	}
+	if m.secondary != nil {
+		fields = append(fields, profileassignment.FieldSecondary)
+	}
+	if m.rationale != nil {
+		fields = append(fields, profileassignment.FieldRationale)
+	}
+	if m.proposed_by != nil {
+		fields = append(fields, profileassignment.FieldProposedBy)
+	}
+	if m.status != nil {
+		fields = append(fields, profileassignment.FieldStatus)
+	}
+	if m.confirmed_by != nil {
+		fields = append(fields, profileassignment.FieldConfirmedBy)
+	}
+	if m.confirmed_at != nil {
+		fields = append(fields, profileassignment.FieldConfirmedAt)
+	}
+	if m.evidence_ids != nil {
+		fields = append(fields, profileassignment.FieldEvidenceIds)
+	}
+	if m.created_at != nil {
+		fields = append(fields, profileassignment.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, profileassignment.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ProfileAssignmentMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case profileassignment.FieldProfileID:
+		return m.ProfileID()
+	case profileassignment.FieldSecondary:
+		return m.Secondary()
+	case profileassignment.FieldRationale:
+		return m.Rationale()
+	case profileassignment.FieldProposedBy:
+		return m.ProposedBy()
+	case profileassignment.FieldStatus:
+		return m.Status()
+	case profileassignment.FieldConfirmedBy:
+		return m.ConfirmedBy()
+	case profileassignment.FieldConfirmedAt:
+		return m.ConfirmedAt()
+	case profileassignment.FieldEvidenceIds:
+		return m.EvidenceIds()
+	case profileassignment.FieldCreatedAt:
+		return m.CreatedAt()
+	case profileassignment.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ProfileAssignmentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case profileassignment.FieldProfileID:
+		return m.OldProfileID(ctx)
+	case profileassignment.FieldSecondary:
+		return m.OldSecondary(ctx)
+	case profileassignment.FieldRationale:
+		return m.OldRationale(ctx)
+	case profileassignment.FieldProposedBy:
+		return m.OldProposedBy(ctx)
+	case profileassignment.FieldStatus:
+		return m.OldStatus(ctx)
+	case profileassignment.FieldConfirmedBy:
+		return m.OldConfirmedBy(ctx)
+	case profileassignment.FieldConfirmedAt:
+		return m.OldConfirmedAt(ctx)
+	case profileassignment.FieldEvidenceIds:
+		return m.OldEvidenceIds(ctx)
+	case profileassignment.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case profileassignment.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown ProfileAssignment field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ProfileAssignmentMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case profileassignment.FieldProfileID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProfileID(v)
+		return nil
+	case profileassignment.FieldSecondary:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSecondary(v)
+		return nil
+	case profileassignment.FieldRationale:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRationale(v)
+		return nil
+	case profileassignment.FieldProposedBy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProposedBy(v)
+		return nil
+	case profileassignment.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case profileassignment.FieldConfirmedBy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConfirmedBy(v)
+		return nil
+	case profileassignment.FieldConfirmedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConfirmedAt(v)
+		return nil
+	case profileassignment.FieldEvidenceIds:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEvidenceIds(v)
+		return nil
+	case profileassignment.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case profileassignment.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ProfileAssignment field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ProfileAssignmentMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ProfileAssignmentMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ProfileAssignmentMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ProfileAssignment numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ProfileAssignmentMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(profileassignment.FieldSecondary) {
+		fields = append(fields, profileassignment.FieldSecondary)
+	}
+	if m.FieldCleared(profileassignment.FieldConfirmedBy) {
+		fields = append(fields, profileassignment.FieldConfirmedBy)
+	}
+	if m.FieldCleared(profileassignment.FieldConfirmedAt) {
+		fields = append(fields, profileassignment.FieldConfirmedAt)
+	}
+	if m.FieldCleared(profileassignment.FieldEvidenceIds) {
+		fields = append(fields, profileassignment.FieldEvidenceIds)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ProfileAssignmentMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ProfileAssignmentMutation) ClearField(name string) error {
+	switch name {
+	case profileassignment.FieldSecondary:
+		m.ClearSecondary()
+		return nil
+	case profileassignment.FieldConfirmedBy:
+		m.ClearConfirmedBy()
+		return nil
+	case profileassignment.FieldConfirmedAt:
+		m.ClearConfirmedAt()
+		return nil
+	case profileassignment.FieldEvidenceIds:
+		m.ClearEvidenceIds()
+		return nil
+	}
+	return fmt.Errorf("unknown ProfileAssignment nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ProfileAssignmentMutation) ResetField(name string) error {
+	switch name {
+	case profileassignment.FieldProfileID:
+		m.ResetProfileID()
+		return nil
+	case profileassignment.FieldSecondary:
+		m.ResetSecondary()
+		return nil
+	case profileassignment.FieldRationale:
+		m.ResetRationale()
+		return nil
+	case profileassignment.FieldProposedBy:
+		m.ResetProposedBy()
+		return nil
+	case profileassignment.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case profileassignment.FieldConfirmedBy:
+		m.ResetConfirmedBy()
+		return nil
+	case profileassignment.FieldConfirmedAt:
+		m.ResetConfirmedAt()
+		return nil
+	case profileassignment.FieldEvidenceIds:
+		m.ResetEvidenceIds()
+		return nil
+	case profileassignment.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case profileassignment.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown ProfileAssignment field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ProfileAssignmentMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ProfileAssignmentMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ProfileAssignmentMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ProfileAssignmentMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ProfileAssignmentMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ProfileAssignmentMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ProfileAssignmentMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown ProfileAssignment unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ProfileAssignmentMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown ProfileAssignment edge %s", name)
 }
 
 // RankOverrideMutation represents an operation that mutates the RankOverride nodes in the graph.

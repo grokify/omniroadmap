@@ -204,6 +204,20 @@ func (_c *OpportunityAssessmentCreate) SetNillableMihCategory(v *string) *Opport
 	return _c
 }
 
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (_c *OpportunityAssessmentCreate) SetCompassProfileID(v string) *OpportunityAssessmentCreate {
+	_c.mutation.SetCompassProfileID(v)
+	return _c
+}
+
+// SetNillableCompassProfileID sets the "compass_profile_id" field if the given value is not nil.
+func (_c *OpportunityAssessmentCreate) SetNillableCompassProfileID(v *string) *OpportunityAssessmentCreate {
+	if v != nil {
+		_c.SetCompassProfileID(*v)
+	}
+	return _c
+}
+
 // SetCanonical sets the "canonical" field.
 func (_c *OpportunityAssessmentCreate) SetCanonical(v assessment.OpportunityAssessment) *OpportunityAssessmentCreate {
 	_c.mutation.SetCanonical(v)
@@ -353,6 +367,11 @@ func (_c *OpportunityAssessmentCreate) check() error {
 			return &ValidationError{Name: "mih_category", err: fmt.Errorf(`ent: validator failed for field "OpportunityAssessment.mih_category": %w`, err)}
 		}
 	}
+	if v, ok := _c.mutation.CompassProfileID(); ok {
+		if err := opportunityassessment.CompassProfileIDValidator(v); err != nil {
+			return &ValidationError{Name: "compass_profile_id", err: fmt.Errorf(`ent: validator failed for field "OpportunityAssessment.compass_profile_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Canonical(); !ok {
 		return &ValidationError{Name: "canonical", err: errors.New(`ent: missing required field "OpportunityAssessment.canonical"`)}
 	}
@@ -463,6 +482,10 @@ func (_c *OpportunityAssessmentCreate) createSpec() (*OpportunityAssessment, *sq
 	if value, ok := _c.mutation.MihCategory(); ok {
 		_spec.SetField(opportunityassessment.FieldMihCategory, field.TypeString, value)
 		_node.MihCategory = value
+	}
+	if value, ok := _c.mutation.CompassProfileID(); ok {
+		_spec.SetField(opportunityassessment.FieldCompassProfileID, field.TypeString, value)
+		_node.CompassProfileID = value
 	}
 	if value, ok := _c.mutation.Canonical(); ok {
 		_spec.SetField(opportunityassessment.FieldCanonical, field.TypeJSON, value)
@@ -771,6 +794,24 @@ func (u *OpportunityAssessmentUpsert) UpdateMihCategory() *OpportunityAssessment
 // ClearMihCategory clears the value of the "mih_category" field.
 func (u *OpportunityAssessmentUpsert) ClearMihCategory() *OpportunityAssessmentUpsert {
 	u.SetNull(opportunityassessment.FieldMihCategory)
+	return u
+}
+
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (u *OpportunityAssessmentUpsert) SetCompassProfileID(v string) *OpportunityAssessmentUpsert {
+	u.Set(opportunityassessment.FieldCompassProfileID, v)
+	return u
+}
+
+// UpdateCompassProfileID sets the "compass_profile_id" field to the value that was provided on create.
+func (u *OpportunityAssessmentUpsert) UpdateCompassProfileID() *OpportunityAssessmentUpsert {
+	u.SetExcluded(opportunityassessment.FieldCompassProfileID)
+	return u
+}
+
+// ClearCompassProfileID clears the value of the "compass_profile_id" field.
+func (u *OpportunityAssessmentUpsert) ClearCompassProfileID() *OpportunityAssessmentUpsert {
+	u.SetNull(opportunityassessment.FieldCompassProfileID)
 	return u
 }
 
@@ -1133,6 +1174,27 @@ func (u *OpportunityAssessmentUpsertOne) UpdateMihCategory() *OpportunityAssessm
 func (u *OpportunityAssessmentUpsertOne) ClearMihCategory() *OpportunityAssessmentUpsertOne {
 	return u.Update(func(s *OpportunityAssessmentUpsert) {
 		s.ClearMihCategory()
+	})
+}
+
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (u *OpportunityAssessmentUpsertOne) SetCompassProfileID(v string) *OpportunityAssessmentUpsertOne {
+	return u.Update(func(s *OpportunityAssessmentUpsert) {
+		s.SetCompassProfileID(v)
+	})
+}
+
+// UpdateCompassProfileID sets the "compass_profile_id" field to the value that was provided on create.
+func (u *OpportunityAssessmentUpsertOne) UpdateCompassProfileID() *OpportunityAssessmentUpsertOne {
+	return u.Update(func(s *OpportunityAssessmentUpsert) {
+		s.UpdateCompassProfileID()
+	})
+}
+
+// ClearCompassProfileID clears the value of the "compass_profile_id" field.
+func (u *OpportunityAssessmentUpsertOne) ClearCompassProfileID() *OpportunityAssessmentUpsertOne {
+	return u.Update(func(s *OpportunityAssessmentUpsert) {
+		s.ClearCompassProfileID()
 	})
 }
 
@@ -1666,6 +1728,27 @@ func (u *OpportunityAssessmentUpsertBulk) UpdateMihCategory() *OpportunityAssess
 func (u *OpportunityAssessmentUpsertBulk) ClearMihCategory() *OpportunityAssessmentUpsertBulk {
 	return u.Update(func(s *OpportunityAssessmentUpsert) {
 		s.ClearMihCategory()
+	})
+}
+
+// SetCompassProfileID sets the "compass_profile_id" field.
+func (u *OpportunityAssessmentUpsertBulk) SetCompassProfileID(v string) *OpportunityAssessmentUpsertBulk {
+	return u.Update(func(s *OpportunityAssessmentUpsert) {
+		s.SetCompassProfileID(v)
+	})
+}
+
+// UpdateCompassProfileID sets the "compass_profile_id" field to the value that was provided on create.
+func (u *OpportunityAssessmentUpsertBulk) UpdateCompassProfileID() *OpportunityAssessmentUpsertBulk {
+	return u.Update(func(s *OpportunityAssessmentUpsert) {
+		s.UpdateCompassProfileID()
+	})
+}
+
+// ClearCompassProfileID clears the value of the "compass_profile_id" field.
+func (u *OpportunityAssessmentUpsertBulk) ClearCompassProfileID() *OpportunityAssessmentUpsertBulk {
+	return u.Update(func(s *OpportunityAssessmentUpsert) {
+		s.ClearCompassProfileID()
 	})
 }
 
