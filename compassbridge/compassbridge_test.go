@@ -184,6 +184,34 @@ func TestNextCycleWithCompass(t *testing.T) {
 	}
 }
 
+func TestNextCycleWithCompassCarriesForwardOtherFields(t *testing.T) {
+	c, err := Ingest(validOutput())
+	if err != nil {
+		t.Fatalf("Ingest() error = %v", err)
+	}
+	first := FirstCycleWithCompass("OA-001", assessment.OpportunityRef{SpecID: "OS-001"}, "Test opportunity", time.Now(), c)
+	first.MoSCoWAnswers = []assessment.ThresholdAnswer{
+		{LevelID: "must", Satisfied: true, EvidenceIDs: []string{"EV-1"}},
+	}
+	first.Dimensions = []assessment.DimensionAssignment{
+		{DimensionID: "kano", Category: &assessment.CategorySelection{OptionID: "must_be", Resolved: true}},
+	}
+
+	next := NextCycleWithCompass(first, "OA-002", time.Now(), c)
+
+	if len(next.MoSCoWAnswers) != 1 || next.MoSCoWAnswers[0].LevelID != "must" {
+		t.Errorf("MoSCoWAnswers = %+v, want carried forward from the prior cycle", next.MoSCoWAnswers)
+	}
+	if len(next.Dimensions) != 1 || next.Dimensions[0].DimensionID != "kano" {
+		t.Errorf("Dimensions = %+v, want carried forward from the prior cycle", next.Dimensions)
+	}
+	// Mutating the copy must not affect the prior cycle's slice.
+	next.MoSCoWAnswers[0].LevelID = "should"
+	if first.MoSCoWAnswers[0].LevelID != "must" {
+		t.Error("mutating next.MoSCoWAnswers affected first.MoSCoWAnswers -- want an independent copy")
+	}
+}
+
 func TestProposeConfirmProfile(t *testing.T) {
 	p, err := ProposeProfile("OS-001", customerB2BProfileID, "primarily a retention play", "judge-session-9")
 	if err != nil {

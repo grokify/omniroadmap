@@ -117,8 +117,21 @@ func FirstCycleWithCompass(id string, ref assessment.OpportunityRef, title strin
 // opportunity, with a COMPASS-RICE assessment already attached — the
 // mechanism for re-scoring an opportunity (a corrected evidence document,
 // or a PM's HumanReview acceptance) without mutating a past cycle.
+//
+// prev.NextCycle itself only carries forward Opportunity/Title/Cycle (every
+// other field starts blank, so a caller must explicitly re-supply what a
+// genuinely new judgment changed). Since NextCycleWithCompass only intends
+// to change Compass, it carries every other field forward unchanged first
+// — otherwise re-scoring an opportunity would silently drop its MoSCoW
+// answers, dimensions, OKR contributions, and capability references.
 func NextCycleWithCompass(prev *assessment.OpportunityAssessment, id string, assessedAt time.Time, c assessment.CompassAssessment) *assessment.OpportunityAssessment {
 	next := prev.NextCycle(id, assessedAt)
+	next.Judge = prev.Judge
+	next.MoSCoWAnswers = append([]assessment.ThresholdAnswer{}, prev.MoSCoWAnswers...)
+	next.RICE = prev.RICE
+	next.Dimensions = append([]assessment.DimensionAssignment{}, prev.Dimensions...)
+	next.Contributions = append([]assessment.OKRContribution{}, prev.Contributions...)
+	next.Capabilities = append([]assessment.CapabilityReference{}, prev.Capabilities...)
 	next.Compass = &c
 	return next
 }
