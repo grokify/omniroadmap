@@ -95,15 +95,15 @@ func TestProjectAssessmentKanoAndMIH(t *testing.T) {
 	a := *assessment.NewOpportunityAssessment("OA-1", assessment.OpportunityRef{SpecID: "OPP-1"}, "Title", now)
 	a.Dimensions = []assessment.DimensionAssignment{
 		{DimensionID: "kano", Category: &assessment.CategorySelection{OptionID: "performance", Resolved: true}},
-		{DimensionID: "market-investment-horizon", Category: &assessment.CategorySelection{OptionID: "sam_som", Resolved: true}},
+		{DimensionID: "market-investment-horizon", Category: &assessment.CategorySelection{OptionID: "som", Resolved: true}},
 	}
 
 	proj := projectAssessment(a)
 	if proj.kanoCategory != "performance" {
 		t.Errorf("kanoCategory = %q, want performance", proj.kanoCategory)
 	}
-	if proj.mihCategory != "sam_som" {
-		t.Errorf("mihCategory = %q, want sam_som", proj.mihCategory)
+	if proj.mihCategory != "som" {
+		t.Errorf("mihCategory = %q, want som", proj.mihCategory)
 	}
 }
 

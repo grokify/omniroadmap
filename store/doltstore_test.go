@@ -396,7 +396,7 @@ func TestDoltStore_OpportunityAssessment(t *testing.T) {
 	t2 := t1.Add(90 * 24 * time.Hour)
 	second := first.NextCycle("OA-2", t2)
 	second.Dimensions = []assessment.DimensionAssignment{
-		{DimensionID: "market-investment-horizon", Category: &assessment.CategorySelection{OptionID: "sam_som", Resolved: true}},
+		{DimensionID: "market-investment-horizon", Category: &assessment.CategorySelection{OptionID: "som", Resolved: true}},
 	}
 	if err := s.SaveOpportunityAssessment(ctx, *second); err != nil {
 		t.Fatalf("SaveOpportunityAssessment (cycle 2): %v", err)
