@@ -64,3 +64,5 @@ nav:
   - Analytics & Dashboards: analytics.md
   - prism-roadmap Export: export-prismroadmap.md
   - CLI Reference: cli.md
+  - Releases:
+      - v0.1.0: releases/v0.1.0.md
