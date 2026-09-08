@@ -8,22 +8,22 @@
 [![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
 
- [go-ci-svg]: https://github.com/grokify/guardsql/actions/workflows/go-ci.yaml/badge.svg?branch=main
- [go-ci-url]: https://github.com/grokify/guardsql/actions/workflows/go-ci.yaml
- [go-lint-svg]: https://github.com/grokify/guardsql/actions/workflows/go-lint.yaml/badge.svg?branch=main
- [go-lint-url]: https://github.com/grokify/guardsql/actions/workflows/go-lint.yaml
- [go-sast-svg]: https://github.com/grokify/guardsql/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
- [go-sast-url]: https://github.com/grokify/guardsql/actions/workflows/go-sast-codeql.yaml
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/guardsql
- [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/guardsql
+ [go-ci-svg]: https://github.com/grokify/omniroadmap/actions/workflows/go-ci.yaml/badge.svg?branch=main
+ [go-ci-url]: https://github.com/grokify/omniroadmap/actions/workflows/go-ci.yaml
+ [go-lint-svg]: https://github.com/grokify/omniroadmap/actions/workflows/go-lint.yaml/badge.svg?branch=main
+ [go-lint-url]: https://github.com/grokify/omniroadmap/actions/workflows/go-lint.yaml
+ [go-sast-svg]: https://github.com/grokify/omniroadmap/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
+ [go-sast-url]: https://github.com/grokify/omniroadmap/actions/workflows/go-sast-codeql.yaml
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/omniroadmap
+ [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/omniroadmap
  [docs-mkdoc-svg]: https://img.shields.io/badge/Go-dev%20guide-blue.svg
- [docs-mkdoc-url]: https://grokify.github.io/guardsql
+ [docs-mkdoc-url]: https://grokify.github.io/omniroadmap
  [viz-svg]: https://img.shields.io/badge/visualizaton-Go-blue.svg
- [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=grokify%2Fguardsql
- [loc-svg]: https://tokei.rs/b1/github/grokify/guardsql
- [repo-url]: https://github.com/grokify/guardsql
+ [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=grokify%2Fomniroadmap
+ [loc-svg]: https://tokei.rs/b1/github/grokify/omniroadmap
+ [repo-url]: https://github.com/grokify/omniroadmap
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/guardsql/blob/main/LICENSE
+ [license-url]: https://github.com/grokify/omniroadmap/blob/main/LICENSE
 
 Batteries-included entry point for the omniroadmap ecosystem: a common,
 tool-agnostic representation of roadmap/product-management data (features,
