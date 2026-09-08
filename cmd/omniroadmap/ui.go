@@ -504,8 +504,8 @@ func applyUIPrioritization(rows []guardsql.Row, strategies []string) ([]guardsql
 				if ir != jr {
 					return ir < jr
 				}
-				irice, _ := asFloat64(rows[i]["rice_score"])
-				jrice, _ := asFloat64(rows[j]["rice_score"])
+				irice := asFloat64(rows[i]["rice_score"])
+				jrice := asFloat64(rows[j]["rice_score"])
 				if irice != jrice {
 					return irice > jrice
 				}
@@ -673,28 +673,28 @@ func queryColumnLabels(items []provider.Item, entity string) map[string]string {
 
 func uiQuerySchema(items []provider.Item, maxLimit int) guardsql.Schema {
 	fields := map[string]guardsql.Field{}
-	add := func(name string, typ guardsql.FieldType, sortable bool) {
-		fields[name] = guardsql.Field{Name: name, Type: typ, Selectable: true, Filterable: true, Sortable: sortable}
+	add := func(name string, typ guardsql.FieldType) {
+		fields[name] = guardsql.Field{Name: name, Type: typ, Selectable: true, Filterable: true, Sortable: true}
 	}
-	add("id", guardsql.FieldString, true)
-	add("provider", guardsql.FieldString, true)
-	add("source_id", guardsql.FieldString, true)
-	add("source_ref", guardsql.FieldString, true)
-	add("source_url", guardsql.FieldString, true)
-	add("workspace_ref", guardsql.FieldString, true)
-	add("kind", guardsql.FieldString, true)
-	add("name", guardsql.FieldString, true)
-	add("status", guardsql.FieldString, true)
-	add("status_category", guardsql.FieldString, true)
-	add("owner", guardsql.FieldString, true)
-	add("release_id", guardsql.FieldString, true)
-	add("moscow", guardsql.FieldString, true)
-	add("moscow_rank", guardsql.FieldNumber, true)
-	add("kano", guardsql.FieldString, true)
-	add("progress", guardsql.FieldNumber, true)
-	add("rice_score", guardsql.FieldNumber, true)
-	add("due_date", guardsql.FieldString, true)
-	add("updated_at", guardsql.FieldString, true)
+	add("id", guardsql.FieldString)
+	add("provider", guardsql.FieldString)
+	add("source_id", guardsql.FieldString)
+	add("source_ref", guardsql.FieldString)
+	add("source_url", guardsql.FieldString)
+	add("workspace_ref", guardsql.FieldString)
+	add("kind", guardsql.FieldString)
+	add("name", guardsql.FieldString)
+	add("status", guardsql.FieldString)
+	add("status_category", guardsql.FieldString)
+	add("owner", guardsql.FieldString)
+	add("release_id", guardsql.FieldString)
+	add("moscow", guardsql.FieldString)
+	add("moscow_rank", guardsql.FieldNumber)
+	add("kano", guardsql.FieldString)
+	add("progress", guardsql.FieldNumber)
+	add("rice_score", guardsql.FieldNumber)
+	add("due_date", guardsql.FieldString)
+	add("updated_at", guardsql.FieldString)
 	for _, it := range items {
 		for _, field := range it.CustomFields {
 			queryField := customQueryField(field.Key)
@@ -766,26 +766,24 @@ func moscowRankValue(value any) float64 {
 	}
 }
 
-func asFloat64(value any) (float64, bool) {
+func asFloat64(value any) float64 {
 	switch v := value.(type) {
-	case nil:
-		return 0, false
 	case float64:
-		return v, true
+		return v
 	case float32:
-		return float64(v), true
+		return float64(v)
 	case int:
-		return float64(v), true
+		return float64(v)
 	case int64:
-		return float64(v), true
+		return float64(v)
 	case json.Number:
-		f, err := v.Float64()
-		return f, err == nil
+		f, _ := v.Float64()
+		return f
 	case string:
-		f, err := strconv.ParseFloat(strings.TrimSpace(v), 64)
-		return f, err == nil
+		f, _ := strconv.ParseFloat(strings.TrimSpace(v), 64)
+		return f
 	default:
-		return 0, false
+		return 0
 	}
 }
 
