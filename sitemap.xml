@@ -2,38 +2,66 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://grokify.github.io/omniroadmap/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/analytics/</loc>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/augment/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/cli/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/compass-rice/</loc>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/effort-evaluation/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/export-prismroadmap/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/fieldmap/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/getting-started/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/providers/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://grokify.github.io/omniroadmap/store-sync/</loc>
-         <lastmod>2026-08-24</lastmod>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/releases/v0.1.0/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/specs/initiatives/INIT-OMNIROADMAP-001/PLAN/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/specs/initiatives/INIT-OMNIROADMAP-001/PRD/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/specs/initiatives/INIT-OMNIROADMAP-001/ROADMAP/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://grokify.github.io/omniroadmap/specs/initiatives/INIT-OMNIROADMAP-001/TRD/</loc>
+         <lastmod>2026-09-08</lastmod>
     </url>
 </urlset>

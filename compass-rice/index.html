@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://grokify.github.io/omniroadmap/store-sync/">
+        <link rel="canonical" href="https://grokify.github.io/omniroadmap/compass-rice/">
       
       
-        <link rel="prev" href="../augment/">
+        <link rel="prev" href="../store-sync/">
       
       
-        <link rel="next" href="../compass-rice/">
+        <link rel="next" href="../analytics/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Store & Sync - omniroadmap</title>
+        <title>COMPASS-RICE Prioritization - omniroadmap</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#store-sync" class="md-skip">
+        <a href="#compass-rice-prioritization" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Store & Sync
+              COMPASS-RICE Prioritization
             
           </span>
         </div>
@@ -394,6 +394,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../store-sync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Store & Sync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -413,7 +440,7 @@
   <span class="md-ellipsis">
     
   
-    Store & Sync
+    COMPASS-RICE Prioritization
   
 
     
@@ -431,7 +458,7 @@
   <span class="md-ellipsis">
     
   
-    Store & Sync
+    COMPASS-RICE Prioritization
   
 
     
@@ -457,49 +484,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-dolt-store" class="md-nav__link">
+  <a href="#two-phase-scoring-llm-proposes-pm-confirms" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Dolt store
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Dolt store">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#testing-the-store" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Testing the store
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tables
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-sync-engine" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The sync engine
+        Two-phase scoring: LLM proposes, PM confirms
       
     </span>
   </a>
@@ -507,10 +495,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#programmatic-store-access" class="md-nav__link">
+  <a href="#the-compile-time-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Programmatic store access
+        The compile-time gate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-confidence-integrity-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The confidence integrity check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scoring-an-opportunity-end-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scoring an opportunity end to end
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualizing-scores-dashforge-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualizing scores: DashForge dashboards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions-worth-knowing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design decisions worth knowing
       
     </span>
   </a>
@@ -521,33 +553,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../compass-rice/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    COMPASS-RICE Prioritization
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -749,49 +754,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-dolt-store" class="md-nav__link">
+  <a href="#two-phase-scoring-llm-proposes-pm-confirms" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Dolt store
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Dolt store">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#testing-the-store" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Testing the store
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Tables
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-sync-engine" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The sync engine
+        Two-phase scoring: LLM proposes, PM confirms
       
     </span>
   </a>
@@ -799,10 +765,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#programmatic-store-access" class="md-nav__link">
+  <a href="#the-compile-time-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Programmatic store access
+        The compile-time gate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-confidence-integrity-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The confidence integrity check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scoring-an-opportunity-end-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scoring an opportunity end to end
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualizing-scores-dashforge-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualizing scores: DashForge dashboards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-decisions-worth-knowing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design decisions worth knowing
       
     </span>
   </a>
@@ -829,139 +839,183 @@
   
 
 
-<h1 id="store-sync">Store &amp; Sync</h1>
-<h2 id="the-dolt-store">The Dolt store</h2>
-<p>The canonical store is <a href="https://www.dolthub.com/">Dolt</a> — a
-MySQL-compatible, version-controlled database — accessed through
-<a href="https://entgo.io/">Ent</a> over the MySQL wire protocol. The wiring follows
-the pattern established by visionstudio: a local <code>dolt sql-server</code>
-subprocess (launched automatically when none is reachable), and Dolt
-commits (<code>CALL DOLT_ADD</code>/<code>DOLT_COMMIT</code>) wrapping each sync run so the
-store's history is itself versioned.</p>
-<p>Defaults:</p>
+<h1 id="compass-rice-prioritization">COMPASS-RICE Prioritization</h1>
+<p>omniroadmap adopts <a href="https://github.com/ProductBuildersHQ/compass-rice">compass-rice</a>'s
+COMPASS-RICE methodology to solve a problem the <a href="https://github.com/grokify/prism-roadmap">prism-roadmap</a>
+ladder-based RICE score can't: a single 0..1 Reach fraction isn't
+comparable across a portfolio that mixes customer features, platform
+investments, risk mitigations, and cost optimizations. COMPASS-RICE
+normalizes each of six investment-thesis profiles (Customer, Platform,
+Market Expansion, Operational Efficiency, Supportability, Risk) — each
+with its own domain-specific evidence model — into the same canonical
+Reach/Impact/Confidence/Effort shape, so the resulting score is comparable
+portfolio-wide regardless of which profile produced it.</p>
+<p>omniroadmap's own ranking pipeline is <strong>compass-only</strong>: an opportunity
+without a PM-confirmed COMPASS profile is excluded from ranking with an
+explicit reason, never silently scored on the legacy ladder scale (the two
+Reach regimes — 0–100 banded vs. 0..1 fraction — are numerically
+incompatible). The legacy ladder RICE API still exists in prism-roadmap
+for other consumers; omniroadmap's <code>compile</code> package just never falls back
+to it.</p>
+<h2 id="two-phase-scoring-llm-proposes-pm-confirms">Two-phase scoring: LLM proposes, PM confirms</h2>
+<p>Every score traces back to a <strong>primary investment thesis</strong> — exactly one
+profile, confirmed by a human, before its score counts toward ranking
+(compass-rice PRD D5: never run competing profiles to produce competing
+scores).</p>
+<pre class="mermaid"><code>flowchart TD
+    A["LLM judge proposes a profile&lt;br/&gt;omniroadmap profile propose"] --&gt; B{PM reviews}
+    B --&gt;|confirm| C["Profile confirmed&lt;br/&gt;omniroadmap profile confirm"]
+    B --&gt;|reject| D["Profile rejected, rationale recorded&lt;br/&gt;omniroadmap profile reject"]
+    D --&gt; A
+    C --&gt; E["Judge scores the opportunity&lt;br/&gt;omniroadmap assess import"]
+    E --&gt; F{Evidence confidence&lt;br/&gt;backed by verified claims?}
+    F --&gt;|no| G[Ingest rejected, repair prompts shown]
+    G --&gt; E
+    F --&gt;|yes| H{Flagged NeedsHumanReview?}
+    H --&gt;|yes, unreviewed| I[Uncomputable: awaiting human review]
+    H --&gt;|no, or already reviewed| J["Computable — enters compile"]
+    K["Human enters evidence directly&lt;br/&gt;omniroadmap assess set"] --&gt; J
+    J --&gt; L["omniroadmap-generated compile&lt;br/&gt;(compile.Compile)"]
+    L --&gt; M["Portfolio review&lt;br/&gt;(review.Apply overrides if needed)"]
+    M --&gt; N["Rank materialization&lt;br/&gt;(materialize.Materialize)"]
+    N --&gt; O["DashForge dashboards&lt;br/&gt;(compass-rice-all, moscow-compass-rice,&lt;br/&gt;compass-profile-*, portfolio-overview)"]</code></pre>
+<p><code>profile propose</code>/<code>confirm</code>/<code>reject</code> and <code>assess import</code>/<code>set</code> are
+independent steps — an opportunity can have its profile confirmed before
+or after it's actually scored, and its MoSCoW tier (<a href="../cli/"><code>omniroadmap moscow</code></a>)
+is assessed on its own timeline entirely. <code>compile</code> is the single place
+all three come together into a rank.</p>
+<h2 id="the-compile-time-gate">The compile-time gate</h2>
+<p><code>compile.Compile</code> (via <code>gateRankInput</code>) enforces the two-phase gate on
+every opportunity in the current assessment corpus, independent of what
+<code>ToRankInput</code> alone would resolve:</p>
 <table>
 <thead>
 <tr>
-<th>Setting</th>
-<th>Value</th>
+<th>Assessment state</th>
+<th>Result</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>DSN</td>
-<td><code>root:@tcp(127.0.0.1:13307)/omniroadmap</code></td>
+<td>No <code>Compass</code> assessment recorded</td>
+<td>Uncomputable: <em>"awaiting COMPASS assessment"</em></td>
 </tr>
 <tr>
-<td>Data directory</td>
-<td><code>~/.omniroadmap</code></td>
+<td><code>Compass</code> recorded, but no matching confirmed <code>ProfileAssignment</code></td>
+<td>Uncomputable: <em>"COMPASS profile not confirmed by PM"</em></td>
 </tr>
 <tr>
-<td>Port</td>
-<td>13307 (distinct from visionstudio's 13306)</td>
+<td><code>Compass</code> recorded, <code>NeedsHumanReview</code> set, no <code>HumanReview</code> cycle yet</td>
+<td>Uncomputable (via <code>ResolveCompassRICE</code>)</td>
+</tr>
+<tr>
+<td><code>Compass</code> recorded and confirmed</td>
+<td>Computable — ranked by MoSCoW tier, then COMPASS-RICE score</td>
 </tr>
 </tbody>
 </table>
-<p>Port/DSN/data-dir are configurable via <code>~/.omniroadmap/config.json</code> (or
-<code>OMNIROADMAP_PORT</code>/<code>OMNIROADMAP_DSN</code>/<code>OMNIROADMAP_DATA_DIR</code>, or CLI flags)
-— see <a href="../cli/#omniroadmap-config"><code>omniroadmap config</code></a>. This matters
-when running multiple Dolt-backed tools on one machine: each needs its
-own port so their <code>dolt sql-server</code> processes don't collide.</p>
-<h3 id="testing-the-store">Testing the store</h3>
-<p>The <code>store</code> package's Dolt integration tests are opt-in, not opt-out:
-they skip by default — even with the <code>dolt</code> binary on PATH — so a plain
-<code>go test ./...</code> stays a fast, hermetic check of the Go library code and
-never depends on a live Dolt server. Run them explicitly with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nv">OMNIROADMAP_TEST_DOLT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./store/...
+<p>Excluded opportunities are never dropped — they come back with their
+reason, exactly like <code>assessment.RankingPolicy</code>'s existing <code>ExclusionWont</code>/
+<code>ExclusionRICEUncomputable</code> handling. <code>omniroadmap assess list</code> surfaces
+this directly: <code>computable</code>, <code>needs-review</code>, <code>uncomputable</code>, or
+<code>no-compass</code>.</p>
+<h2 id="the-confidence-integrity-check">The confidence integrity check</h2>
+<p><code>compassbridge.Ingest</code> never trusts a judge's self-reported confidence.
+compass-rice's <code>Normalizer</code> derives a Confidence tier from the evidence
+struct's self-reported source counts (<code>verifiedQuantitativeSources</code>,
+<code>verifiedQualitativeSources</code>); <code>provenance.Confidence</code> derives a Confidence
+tier independently from the judge's actual verified <code>claims.Claim</code> list.
+If the evidence-derived tier exceeds the claims-derived tier — the
+evidence claims more confidence than its citations actually support —
+<code>Ingest</code> rejects the assessment and surfaces <code>RepairPrompts()</code> from any
+reason codes attached to the judge's rubric categories.</p>
+<p><code>omniroadmap assess set</code> (the human-entered path) skips this check
+entirely: a human who typed the evidence themselves is trusted at face
+value, and the resulting assessment is marked already human-reviewed.</p>
+<h2 id="scoring-an-opportunity-end-to-end">Scoring an opportunity end to end</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 1. LLM proposes the profile (judge identity via --by)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>omniroadmap<span class="w"> </span>profile<span class="w"> </span>propose<span class="w"> </span>--spec-id<span class="w"> </span>OPP-42<span class="w"> </span>--profile<span class="w"> </span>customer/b2b/v1<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>--rationale<span class="w"> </span><span class="s2">&quot;primarily a retention play&quot;</span><span class="w"> </span>--by<span class="w"> </span>claude-session-9
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># 2. PM confirms it</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>omniroadmap<span class="w"> </span>profile<span class="w"> </span>confirm<span class="w"> </span>--spec-id<span class="w"> </span>OPP-42<span class="w"> </span>--by<span class="w"> </span>pm@example.com
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># 3a. Judge submits evidence + verified claims</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>omniroadmap<span class="w"> </span>assess<span class="w"> </span>import<span class="w"> </span>judge-output.json
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># 3b. ...or a PM enters evidence directly (no judge output needed)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>omniroadmap<span class="w"> </span>assess<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--spec-id<span class="w"> </span>OPP-42<span class="w"> </span>--profile<span class="w"> </span>customer/b2b/v1<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span>-f<span class="w"> </span>evidence.json<span class="w"> </span>--by<span class="w"> </span>pm@example.com
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># 4. Check status</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>omniroadmap<span class="w"> </span>assess<span class="w"> </span>list<span class="w"> </span>--status<span class="w"> </span>computable
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>omniroadmap<span class="w"> </span>assess<span class="w"> </span>show<span class="w"> </span>OPP-42
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1"># 5. Separately, resolve MoSCoW from evidence-backed ladder answers</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>omniroadmap<span class="w"> </span>moscow<span class="w"> </span><span class="nb">set</span><span class="w"> </span>OPP-42<span class="w"> </span>--level<span class="w"> </span>must<span class="w"> </span>--criterion<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span>--rationale<span class="w"> </span><span class="s2">&quot;KTLO: legacy dependency reaches EOL in Q4&quot;</span><span class="w"> </span>--evidence<span class="w"> </span>EV-1
 </code></pre></div>
-<h3 id="tables">Tables</h3>
-<table>
-<thead>
-<tr>
-<th>Table</th>
-<th>Contents</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>items</code></td>
-<td>Canonical items: provenance (<code>provider</code>, <code>source_id</code>, <code>source_ref</code>, <code>source_url</code>), kind, name/description, flattened status (<code>status_name</code>, <code>status_category</code>, ...), dates, owner, <code>moscow</code>/<code>kano</code>, <code>rice</code> (JSON), <code>tags</code>/<code>custom_fields</code>/<code>metadata</code> (JSON)</td>
-</tr>
-<tr>
-<td><code>releases</code></td>
-<td>Canonical releases with the same provenance columns</td>
-</tr>
-<tr>
-<td><code>item_augments</code></td>
-<td>Locally-authored data keyed by (provider, source ref): <code>moscow</code>, <code>kano</code>, <code>rice</code>, <code>okr_refs</code>, <code>notes</code>. Sync never writes here — see <a href="../augment/">Augments</a></td>
-</tr>
-<tr>
-<td><code>custom_field_defs</code></td>
-<td>Custom field definitions per provider (unique on provider+key)</td>
-</tr>
-<tr>
-<td><code>sync_meta</code></td>
-<td>Last sync time + record count per (provider, kind)</td>
-</tr>
-</tbody>
-</table>
-<p>Item IDs are canonical <code>"&lt;provider&gt;:&lt;source id&gt;"</code> strings, so re-syncing
-upserts in place (Ent's <code>sql/upsert</code> feature, <code>ON DUPLICATE KEY UPDATE</code>).
-<code>source_ref</code> carries the source system's human-facing reference (e.g. an
-Aha reference number like <code>MYPROJ-123</code>) and is what augments key on.</p>
-<p>Re-syncing <strong>overwrites every provider-derived column</strong> on an item —
-including <code>moscow</code>/<code>kano</code>/<code>rice</code> values the fieldmap derived from provider
-custom fields. Local judgments that must survive re-syncs belong in the
-<code>item_augments</code> table instead (<a href="../augment/">Augments</a>); reads overlay them
-back on top.</p>
-<h2 id="the-sync-engine">The sync engine</h2>
-<p><code>sync.Run(ctx, store, provider, opts)</code> drives one provider into the store:</p>
-<ol>
-<li>For each supported (or requested) item kind: paginate <code>ListItems</code>,
-   apply the <a href="../fieldmap/">fieldmap</a>, upsert the batch, record sync
-   metadata.</li>
-<li><code>ListReleases</code> / <code>ListCustomFieldDefinitions</code> when the provider's
-   <code>Capabilities</code> advertise them (a provider that has per-record custom
-   fields but can't list definitions — the aha-studio case — is
-   tolerated).</li>
-<li>One Dolt commit for the whole run.</li>
-</ol>
-<p>Pagination is defensive: providers differ (some honor <code>Page</code>/<code>PerPage</code>,
-some return everything on the first call), so paging stops when a page is
-empty, short, or contributes no new IDs — a provider that ignores paging
-entirely cannot cause an infinite loop or duplicates.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">report</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">sync</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">doltStore</span><span class="p">,</span><span class="w"> </span><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="nx">sync</span><span class="p">.</span><span class="nx">Options</span><span class="p">{</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nx">Kinds</span><span class="p">:</span><span class="w">    </span><span class="p">[]</span><span class="nx">provider</span><span class="p">.</span><span class="nx">ItemKind</span><span class="p">{</span><span class="nx">provider</span><span class="p">.</span><span class="nx">ItemKindFeature</span><span class="p">},</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">Fieldmap</span><span class="p">:</span><span class="w"> </span><span class="nx">mapping</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">PerPage</span><span class="p">:</span><span class="w">  </span><span class="mi">100</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">})</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">// report.ItemCounts, report.ReleaseCount, report.CustomFieldDefCount</span>
+<p><code>judge-output.json</code> (the <code>assess import</code> document shape — deliberately
+different from compass-rice's own <code>judge.Output</code> Go struct, which has no
+JSON tags and is meant to be constructed in code, not parsed from a file):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;specId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OPP-42&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Self-service SSO&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;profileId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;customer/b2b/v1&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">&quot;evidence&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">&quot;eligibleAccounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">&quot;affectedAccounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">&quot;eligibleArr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000000</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">&quot;affectedArr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3500000</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">&quot;expectedRetentionOrExpansionImprovementPp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">&quot;verifiedQuantitativeSources&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">&quot;verifiedQualitativeSources&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">&quot;effortPd&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">&quot;claims&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;affected ARR is $3.5M&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">     </span><span class="nt">&quot;verdict&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;verified&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">     </span><span class="nt">&quot;validation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;internal&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;internal&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;log-analysis&quot;</span><span class="p">}}}</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">}</span>
 </code></pre></div>
-<p>The engine writes through a small <code>sync.Store</code> interface —
-<code>*store.DoltStore</code> implements it, and tests run against an in-memory fake,
-so the engine itself needs no Dolt to test.</p>
-<h2 id="programmatic-store-access">Programmatic store access</h2>
-<p><code>store.DoltStore</code> reads items back as canonical types, with the
-<a href="../augment/">augment</a> overlay applied by default:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">s</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">store</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">store</span><span class="p">.</span><span class="nx">DefaultDSN</span><span class="p">())</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Merged view (synced data + augments); filter by provider/kind:</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nx">items</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">ListItems</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">store</span><span class="p">.</span><span class="nx">ItemFilter</span><span class="p">{</span><span class="nx">Provider</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;aha-studio&quot;</span><span class="p">})</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">// One item by source ref (e.g. &quot;MYPROJ-123&quot;), source ID, or canonical ID:</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nx">it</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">GetItem</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;aha-studio&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MYPROJ-123&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1">// Raw synced data, no overlay:</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nx">raw</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">ListItems</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">store</span><span class="p">.</span><span class="nx">ItemFilter</span><span class="p">{</span><span class="nx">WithoutAugments</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">})</span>
+<h2 id="visualizing-scores-dashforge-dashboards">Visualizing scores: DashForge dashboards</h2>
+<p>The whole dashboard surface is <a href="https://github.com/plexusone/dashforge">DashForge</a>
+DashboardIR, not a hand-rolled UI — omniroadmap's job is to be a
+first-class analytics source (catalog + read-only GuardSQL query
+execution) plus a curated dashboard pack, the same "app on a generic
+engine" model Splunk's own SIEM started as. See <a href="../analytics/">Analytics &amp; Dashboards</a>
+for the catalog datasets, query dispatch, and the four curated dashboards.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Run the local UI + analytics API (serves /api/analytics/dashboards live)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>omniroadmap<span class="w"> </span>ui
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Or export the pack for import into a standalone dashforge-server</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>omniroadmap<span class="w"> </span>analytics<span class="w"> </span>export-dashboards<span class="w"> </span>./dashboards
 </code></pre></div>
-<p><code>store.DoltStore.Client()</code> exposes the underlying Ent client for queries
-beyond that:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nx">rows</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">Client</span><span class="p">().</span><span class="nx">Item</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nx">Where</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">Provider</span><span class="p">(</span><span class="s">&quot;aha-studio&quot;</span><span class="p">),</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">Moscow</span><span class="p">(</span><span class="s">&quot;must_have&quot;</span><span class="p">)).</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nx">All</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
-</code></pre></div>
-<p>Because the store is Dolt, you also get versioned history for free:
-<code>dolt log</code>, <code>dolt diff</code>, and branches all work on <code>~/.omniroadmap</code>'s
-database — every sync run is a commit.</p>
+<h2 id="design-decisions-worth-knowing">Design decisions worth knowing</h2>
+<ul>
+<li><strong>No legacy fallback in <code>compile</code>.</strong> <code>assessment.OpportunityAssessment.ToRankInput</code>
+  (prism-roadmap's own library function) falls back to the legacy ladder
+  RICE when <code>Compass</code> is nil, for consumers who haven't adopted COMPASS-RICE.
+  omniroadmap's <code>compile.gateRankInput</code> deliberately does <strong>not</strong> — an
+  opportunity without a confirmed COMPASS profile is uncomputable, full
+  stop, never legacy-scored.</li>
+<li><strong>Cycle carry-forward.</strong> <code>compassbridge.NextCycleWithCompass</code> and the
+  CLI's <code>carryForwardNextCycle</code> (used by <code>moscow set</code>) both explicitly
+  copy every other judgment field (MoSCoW answers, dimensions, OKR
+  contributions, capability references) forward into a new cycle before
+  overriding just the field that command changed.
+  <code>assessment.OpportunityAssessment.NextCycle</code> itself only carries
+  <code>Opportunity</code>/<code>Title</code>/<code>Cycle</code> forward by design — a cycle-producing
+  command that skips this carry-forward step will silently drop unrelated
+  judgment data.</li>
+<li><strong>Secondary profiles are never scored.</strong> A <code>ProfileAssignment.Secondary</code>
+  list records other profiles with real value for an opportunity ("this is
+  primarily Platform, but also has Customer value") as context only —
+  compass-rice's own integration guide is explicit that running a second
+  Normalizer to produce a competing score reopens the score-shopping
+  problem the primary-thesis rule exists to prevent.</li>
+</ul>
 
 
 
