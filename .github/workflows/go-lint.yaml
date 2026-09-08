@@ -25,3 +25,5 @@ on:
 jobs:
   lint:
     uses: grokify/.github/.github/workflows/go-lint.yaml@main
+    with:
+      timeout: 8m
