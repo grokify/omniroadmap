@@ -114,6 +114,73 @@ omniroadmap item get MYPROJ-123
 omniroadmap item get --provider aha-studio MYPROJ-123
 ```
 
+## `omniroadmap assess`
+
+View and score COMPASS-RICE opportunity assessments — see
+[COMPASS-RICE Prioritization](compass-rice.md) for the full pipeline.
+
+```bash
+# "What needs scoring next" -- MoSCoW, profile, and status for every opportunity
+omniroadmap assess list [--profile <id>] [--status computable|needs-review|uncomputable|no-compass] [--json]
+
+# Full detail for one opportunity's current cycle
+omniroadmap assess show <spec-id>
+
+# Ingest an LLM judge's output: {specId, title, profileId, evidence, claims, categories}
+omniroadmap assess import <file.json> [--assessed-at <RFC3339>]
+
+# Record human-entered evidence directly (no judge output needed)
+omniroadmap assess set --spec-id <id> --profile <profile-id> -f evidence.json --by <you> [--assessed-at <RFC3339>]
+```
+
+`import` runs the confidence integrity check (`compassbridge.Ingest`) and
+prints any repair prompts to stderr if the evidence claims more confidence
+than its verified claims support. `set` bypasses that check entirely — a
+human who typed the evidence is trusted at face value — and marks the
+result already human-reviewed.
+
+## `omniroadmap profile`
+
+Manage the two-phase (LLM-proposed, PM-confirmed) profile assignment
+lifecycle. An opportunity's `assess import`/`set` result only counts
+toward ranking once its profile is confirmed here.
+
+```bash
+omniroadmap profile list [--status proposed|confirmed|rejected] [--json]
+omniroadmap profile propose --spec-id <id> --profile <profile-id> --rationale "..." --by <judge>
+omniroadmap profile confirm --spec-id <id> --by <pm>
+omniroadmap profile reject  --spec-id <id> --by <pm> --rationale "..."
+```
+
+## `omniroadmap moscow`
+
+View or set an opportunity's MoSCoW tier, always resolved from
+evidence-backed ladder answers — never a bare tier assignment.
+
+```bash
+omniroadmap moscow get <spec-id> [--json]
+omniroadmap moscow set <spec-id> --level must --criterion 1 \
+  --rationale "legacy dependency reaches EOL in Q4" --evidence EV-1[,EV-2,...]
+```
+
+Run `moscow get` first to see the ladder's criteria list; `--criterion` is
+that list's 1-indexed position. `set` carries every other judgment field
+(Compass, RICE, dimensions, ...) forward into the new cycle unchanged.
+
+## `omniroadmap analytics export-dashboards`
+
+Export the curated [DashForge dashboard pack](analytics.md) — every
+dashboard plus the saved questions their widgets reference — as JSON, for
+import into a standalone dashforge-server.
+
+```bash
+omniroadmap analytics export-dashboards ./dashboards
+# writes ./dashboards/dashboards.json
+```
+
+The same document is served live at `/api/analytics/dashboards` by
+`omniroadmap ui`.
+
 ## `omniroadmap config`
 
 Show the resolved store configuration — DSN, port, and data directory —

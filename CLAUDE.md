@@ -40,6 +40,46 @@ custom field) belongs in fieldmap; a field only a human decides (e.g. "we
 chose to override this to must-have despite what Aha's custom field
 says") belongs in augment.
 
+## COMPASS-RICE prioritization — compass-only, two-phase, no silent drops
+
+See [`docs/compass-rice.md`](docs/compass-rice.md) for the full pipeline.
+Load-bearing conventions when touching this code:
+
+- **`compile.gateRankInput` never falls back to the legacy ladder RICE.**
+  prism-roadmap's own `OpportunityAssessment.ToRankInput` falls back to
+  `ComputeRICE` when `Compass` is nil, for other library consumers.
+  omniroadmap's own pipeline deliberately does not: an opportunity without
+  a `Compass` assessment, or one whose profile isn't PM-confirmed, is
+  uncomputable with an explicit reason, never legacy-scored. The two Reach
+  regimes (0–100 banded vs. 0..1 fraction) are numerically incompatible in
+  one ranked list.
+- **`compassbridge.Ingest`'s confidence integrity check is not optional.**
+  It compares the Confidence tier compass-rice's Normalizer derives from
+  the evidence struct's self-reported source counts against the tier
+  `provenance.Confidence` derives independently from the judge's actual
+  verified claims, and rejects the assessment if the former exceeds the
+  latter. Don't bypass this for the LLM-judge path (`assess import`); the
+  human-entered path (`assess set` / `compassbridge.IngestHumanEvidence`)
+  is the only place evidence is trusted without it, since there are no
+  claims to cross-check.
+- **A cycle-producing command must carry forward every other judgment
+  field it isn't changing.** `assessment.OpportunityAssessment.NextCycle`
+  itself only carries `Opportunity`/`Title`/`Cycle` forward by design —
+  every other field starts blank. `compassbridge.NextCycleWithCompass` and
+  the CLI's `carryForwardNextCycle` (`cmd/omniroadmap/moscow_commands.go`)
+  both explicitly re-copy MoSCoW answers, Dimensions, Contributions, and
+  Capabilities before overriding just the one field that command changed.
+  A new cycle-producing command that skips this will silently drop
+  unrelated judgment data — this was a real bug caught during
+  RMI-OMNIROADMAP-020, not a hypothetical one.
+- **Profile selection is two-phase and never self-confirmed.**
+  `assessment.ProfileAssignment.Status` moves `proposed` → `confirmed`/
+  `rejected` only through `compassbridge.ConfirmProfile`/`RejectProfile`,
+  which both reject a transition attempted from any status other than
+  `proposed`. Route all profile assignment writes through
+  `review.Apply(review.Edit{Kind: review.EditProfile, ...})`, not a direct
+  `store.SaveProfileAssignment` call, so the edit stays auditable.
+
 ## Ent schema changes
 
 `ent/schema/*.go` is hand-written; everything else under `ent/` is

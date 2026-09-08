@@ -56,7 +56,12 @@ elevenlabs-go/opik-go embedded-adapter pattern.
 | `store` | Dolt-backed canonical store (Ent over the MySQL wire protocol, launching a local `dolt sql-server` when needed, with Dolt commits wrapping sync runs) |
 | `sync` | Provider-agnostic sync engine: paginate any provider → fieldmap enrichment → upsert into the store → sync metadata → Dolt commit |
 | `export/prismroadmap` | Converts canonical Items into prism-roadmap types (`rmi.RoadmapItemSet`, validated by prism-roadmap itself), feeding its prioritization tooling and visualization pipeline |
-| `cmd/omniroadmap` | CLI: `sync`, `db init`, `status`, `augment set/get/list/rm`, `item get` |
+| `compassbridge` | Turns a [compass-rice](https://github.com/ProductBuildersHQ/compass-rice) judge output (or human-entered evidence) into a prism-roadmap `CompassAssessment`, with a claims-backed confidence integrity check; implements the two-phase profile assignment lifecycle |
+| `compile` | Assembles a portfolio-wide `ReportDataset` from the assessment corpus — compass-first RICE resolution, MoSCoW+score ranking, the two-phase gate (see [COMPASS-RICE Prioritization](https://grokify.github.io/omniroadmap/compass-rice/)) |
+| `review` | The PM review gate: structured, auditable edits (rank overrides, new assessment cycles, profile assignment changes) that flow back into the assessment IR |
+| `materialize` | Writes a reviewed `ReportDataset`'s ranking back onto the assessment corpus and marks it final |
+| `analyticscatalog` / `analyticsquery` / `analyticsdashboards` | omniroadmap as a [DashForge](https://github.com/plexusone/dashforge) analytics source: catalog datasets, GuardSQL query execution, and a curated dashboard pack (see [Analytics & Dashboards](https://grokify.github.io/omniroadmap/analytics/)) |
+| `cmd/omniroadmap` | CLI: `sync`, `db init`, `status`, `augment set/get/list/rm`, `item get`, `assess list/show/import/set`, `profile list/propose/confirm/reject`, `moscow get/set`, `analytics export-dashboards`, `ui` |
 
 ## Quick start (CLI)
 
@@ -143,6 +148,33 @@ re-sync. Reads (`store.ListItems`/`GetItem`, `omniroadmap item get`)
 overlay augments onto items, with augment values winning over synced ones;
 pass `WithoutAugments` (or inspect `augment get`) to see either layer on
 its own.
+
+## COMPASS-RICE prioritization
+
+Ranking is **compass-only**: an opportunity's score counts only once a
+human has confirmed its primary COMPASS-RICE investment thesis and an
+LLM judge (or a human directly) has entered evidence-backed scoring for
+it. Six domain-specific profiles normalize onto the same canonical
+Reach/Impact/Confidence/Effort shape, so scores stay comparable across a
+portfolio that mixes customer features, platform investments, and risk
+mitigations — something one Reach fraction can't do honestly.
+
+```bash
+omniroadmap profile propose --spec-id OPP-42 --profile customer/b2b/v1 \
+  --rationale "primarily a retention play" --by claude-session-9
+omniroadmap profile confirm --spec-id OPP-42 --by pm@example.com
+omniroadmap assess import judge-output.json
+omniroadmap assess list --status computable
+```
+
+Dashboards are entirely [DashForge](https://github.com/plexusone/dashforge)
+DashboardIR — `omniroadmap ui` serves a curated pack live
+(`/api/analytics/dashboards`), or export it for a standalone
+dashforge-server with `omniroadmap analytics export-dashboards ./dashboards`.
+
+See [COMPASS-RICE Prioritization](https://grokify.github.io/omniroadmap/compass-rice/)
+and [Analytics & Dashboards](https://grokify.github.io/omniroadmap/analytics/)
+for the full pipeline.
 
 ## Store configuration (avoiding port collisions)
 

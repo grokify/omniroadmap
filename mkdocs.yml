@@ -60,5 +60,7 @@ nav:
   - Fieldmap (MoSCoW/Kano/RICE): fieldmap.md
   - Augments: augment.md
   - Store & Sync: store-sync.md
+  - COMPASS-RICE Prioritization: compass-rice.md
+  - Analytics & Dashboards: analytics.md
   - prism-roadmap Export: export-prismroadmap.md
   - CLI Reference: cli.md
