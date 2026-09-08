@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/grokify/omniroadmap/analyticscatalog"
+	"github.com/grokify/omniroadmap/analyticsdashboards"
 	"github.com/grokify/omniroadmap/store"
 )
 
@@ -251,6 +252,20 @@ func registerUIRoutes(mux *http.ServeMux, s *store.DoltStore, limit int) {
 	}
 	mux.HandleFunc("/api/analytics/catalog", handleAnalyticsCatalog)
 	mux.HandleFunc("/api/v1/analytics/catalog", handleAnalyticsCatalog)
+
+	handleAnalyticsDashboards := func(w http.ResponseWriter, r *http.Request) {
+		pack, err := analyticsdashboards.BuildFromStore(r.Context(), s, time.Now())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		enc := json.NewEncoder(w)
+		enc.SetIndent("", "  ")
+		_ = enc.Encode(pack)
+	}
+	mux.HandleFunc("/api/analytics/dashboards", handleAnalyticsDashboards)
+	mux.HandleFunc("/api/v1/analytics/dashboards", handleAnalyticsDashboards)
 }
 
 func isUIPagePath(path string) bool {

@@ -22,6 +22,6 @@ func rootCmd() *cobra.Command {
 		Use:   "omniroadmap",
 		Short: "Tool-agnostic roadmap/PM data: sync Aha!, ProductBoard, and JPD into a Dolt-backed canonical store",
 	}
-	root.AddCommand(syncCmd(), dbCmd(), statusCmd(), augmentCmd(), itemCmd(), configCmd(), uiCmd(), proposeCmd())
+	root.AddCommand(syncCmd(), dbCmd(), statusCmd(), augmentCmd(), itemCmd(), configCmd(), uiCmd(), proposeCmd(), analyticsCmd())
 	return root
 }
