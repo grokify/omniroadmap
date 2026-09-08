@@ -78,6 +78,33 @@ func Ingest(output judge.Output) (assessment.CompassAssessment, error) {
 	return c, nil
 }
 
+// IngestHumanEvidence converts human-entered raw evidence directly into a
+// CompassAssessment, bypassing the judge.Output/confidence-integrity path:
+// a human who typed the evidence themselves is trusted at face value (no
+// claims to cross-check), and the resulting assessment is marked as
+// already human-reviewed -- there is no pending judge output to accept.
+func IngestHumanEvidence(profileID rice.ProfileID, evidenceJSON json.RawMessage, enteredBy string, enteredAt time.Time) (assessment.CompassAssessment, error) {
+	normalized, err := catalog.NormalizeJSON(profileID, evidenceJSON)
+	if err != nil {
+		return assessment.CompassAssessment{}, fmt.Errorf("compassbridge: normalize: %w", err)
+	}
+
+	c := assessment.CompassAssessment{
+		ProfileID:    profileID,
+		EvidenceJSON: evidenceJSON,
+		Normalized:   normalized,
+		HumanReview: &assessment.CompassHumanReview{
+			ReviewedBy: enteredBy,
+			ReviewedAt: enteredAt,
+			Note:       "entered directly by a human; no judge output to review",
+		},
+	}
+	if err := c.Validate(); err != nil {
+		return assessment.CompassAssessment{}, fmt.Errorf("compassbridge: %w", err)
+	}
+	return c, nil
+}
+
 // FirstCycleWithCompass creates the first assessment cycle for an
 // opportunity, with a COMPASS-RICE assessment already attached.
 func FirstCycleWithCompass(id string, ref assessment.OpportunityRef, title string, assessedAt time.Time, c assessment.CompassAssessment) *assessment.OpportunityAssessment {

@@ -109,6 +109,46 @@ func TestIngestWrongEvidenceType(t *testing.T) {
 	}
 }
 
+func TestIngestHumanEvidenceValid(t *testing.T) {
+	evidenceJSON, err := json.Marshal(validCustomerB2BEvidence())
+	if err != nil {
+		t.Fatalf("marshal evidence: %v", err)
+	}
+	now := time.Now()
+	c, err := IngestHumanEvidence(customerB2BProfileID, evidenceJSON, "pm@example.com", now)
+	if err != nil {
+		t.Fatalf("IngestHumanEvidence() error = %v", err)
+	}
+	if c.ProfileID != customerB2BProfileID {
+		t.Errorf("ProfileID = %q, want %q", c.ProfileID, customerB2BProfileID)
+	}
+	if c.NeedsHumanReview {
+		t.Error("NeedsHumanReview = true, want false for a human-entered assessment")
+	}
+	if c.HumanReview == nil {
+		t.Fatal("HumanReview is nil, want set")
+	}
+	if c.HumanReview.ReviewedBy != "pm@example.com" || !c.HumanReview.ReviewedAt.Equal(now) {
+		t.Errorf("HumanReview = %+v", c.HumanReview)
+	}
+	if err := c.Validate(); err != nil {
+		t.Errorf("Validate() error = %v, want nil", err)
+	}
+}
+
+func TestIngestHumanEvidenceUnknownProfile(t *testing.T) {
+	evidenceJSON, _ := json.Marshal(validCustomerB2BEvidence())
+	if _, err := IngestHumanEvidence("bogus/v1", evidenceJSON, "pm@example.com", time.Now()); err == nil {
+		t.Error("IngestHumanEvidence() with unknown profileId = nil error, want error")
+	}
+}
+
+func TestIngestHumanEvidenceInvalidEvidence(t *testing.T) {
+	if _, err := IngestHumanEvidence(customerB2BProfileID, []byte(`{"eligibleArr": -1}`), "pm@example.com", time.Now()); err == nil {
+		t.Error("IngestHumanEvidence() with invalid evidence = nil error, want error")
+	}
+}
+
 func TestFirstCycleWithCompass(t *testing.T) {
 	c, err := Ingest(validOutput())
 	if err != nil {
